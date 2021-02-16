@@ -1,0 +1,37 @@
+Commands used {{
+cpio -ad?
+
+strings {filename}
+outputs all strings in file
+
+file {filename}
+prints details about file
+
+find . -name .bash_history -exec grep -A 1 '^passwd' {} \;
+find {filename} ^ makes it not
+
+find / -type d -name dirname
+finds directory name
+
+diff {filename1} {filename2}
+prints all differences between two files
+
+which {command}
+prints aliases, functions, or destination of executable
+
+    zips {{
+    tar -zxvf filename.tgz
+    z-zipper, x-extract, v-verbose, f-filename
+
+    tar -jxvf filename.tgz
+    j-compressed with bzip
+
+
+
+    }}
+    Grep {{
+    grep -A 1 passwd .bash_history
+    shows one line above passwd found in .bash_history
+    }}
+
+}}

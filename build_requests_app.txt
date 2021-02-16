@@ -1,0 +1,8 @@
+Being able to have some simple scripts to send HTTP requests can be really handy. I would recommend that you build at least the following:
+
+	An HTTP client using a traditional HTTP library (like Ruby's net/http) and one using sockets only that allows you to send basic GET and POST requests.
+	An HTTP client that supports SSL (both with HTTP library and with socket only).
+	An HTTP client that supports cookies (both with HTTP library and with socket only).
+
+Once you have all of these working, you can then build a tool that supports all of these together.
+Once you have all of this ready to go, it is really easy to build your own tool to exploit a vulnerability or to automate some part of the discovery process during a test. Complex bugs often need a bit of automation. You are unlikely to be able to exploit them, unless you can write your own HTTP clients.
