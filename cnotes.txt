@@ -1,3 +1,8 @@
+WSL {{
+explorer.exe .
+//opens windows file explorer in current directory
+}}
+ptlab{{
 Commands used {{
 
 strings {filename}
@@ -67,7 +72,7 @@ true if pattern found
 
 }}
 Services {{
-    MySQL {{
+   MySQL {{
 
     mysql -u root
     // login to mysql as root
@@ -82,4 +87,5 @@ Services {{
 
     N.B.: the show and use command will not work in SQL injections, they are internal command that are not part of SQL
     }}
+}}
 }}
