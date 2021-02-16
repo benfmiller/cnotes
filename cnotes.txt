@@ -63,11 +63,16 @@ su {account}
         }}
     }}
 Grep {{
+
 grep -A 1 passwd .bash_history
-shows one line above passwd found in .bash_history
+// shows one line above passwd found in .bash_history
 
 grep -q {Pattern} {filename}
-true if pattern found
+// true if pattern found
+
+{command} | grep -qv {pattern}
+// returns true if pattern not found in command output
+
 }}
 
 }}
