@@ -1,3 +1,10 @@
+Git Bash {{
+
+.inputrc
+set bell-style none
+thank god removes bash screen blind
+
+}}
 WSL {{
 explorer.exe .
 //opens windows file explorer in current directory
