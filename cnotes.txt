@@ -12,27 +12,40 @@ explorer.exe .
 ptlab{{
 Commands used {{
 
-strings {filename}
-// outputs all strings in file
+    System {{
+    ps -edf
+    // shows details of running processes
 
-file {filename}
-// prints details about file
+    su - {username}
+    the - logs in as if it's a fresh login
 
-find . -name .bash_history -exec grep -A 1 '^passwd' {} \;
-// find {filename} ^ makes it not
+    su {account}
+    // then enter password to log in to account
 
-find / -type d -name dirname
-// finds directory name
+    which {command}
+    // prints aliases, functions, or destination of executable
 
-diff {filename1} {filename2}
-// prints all differences between two files
+    id {user, optional}
+    prints details about current user or details about user given
 
-which {command}
-// prints aliases, functions, or destination of executable
+    }}
+    files {{
+    strings {filename}
+    // outputs all strings in file
 
-su {account}
-// then enter password to log in to account
+    file {filename}
+    // prints details about file
 
+    find . -name .bash_history -exec grep -A 1 '^passwd' {} \;
+    // find {filename} ^ makes it not
+
+    find / -type d -name dirname
+    // finds directory name
+
+    diff {filename1} {filename2}
+    // prints all differences between two files
+
+    }}
     Zips {{
     cpio -idv --no-absolute-filename < {filename}
     // extracts from cpio archive
@@ -104,6 +117,25 @@ Services {{
 
     }}
    Postgres {{
+
+    psql
+    //login
+
+    \list
+    // or \l
+    //lists databases
+
+    \c {database name}
+    //connect to database
+
+    \d
+    //list of tables
+   }}
+   General SQL {{
+
+    select * from {table}
+    //display everything in table
+
 
    }}
 }}
