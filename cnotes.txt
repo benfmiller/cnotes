@@ -96,8 +96,15 @@ Services {{
     use [DATABASE];
     show tables;
     select * from [TABLE];
+    //N.B.: the show and use command will not work in SQL injections, they are internal command that are not part of SQL
 
-    N.B.: the show and use command will not work in SQL injections, they are internal command that are not part of SQL
+    select load_file('{filename}');
+    // doesn't allow access for most places in newer versions
+    // '/var/lib/mysql-files/key.txt'
+
     }}
+   Postgres {{
+
+   }}
 }}
 }}
