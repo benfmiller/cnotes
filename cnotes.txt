@@ -9,8 +9,11 @@ WSL {{
 explorer.exe .
 //opens windows file explorer in current directory
 }}
-ptlab{{
+
 Commands used {{
+
+mimeopen {filename}
+//opens file with prefered program, -a asks which program, -d asks and sets default
 
     System {{
     ps -edf
@@ -138,5 +141,4 @@ Services {{
 
 
    }}
-}}
 }}
