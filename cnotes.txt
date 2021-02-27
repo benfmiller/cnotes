@@ -122,7 +122,7 @@ Services {{
    Postgres {{
 
     psql
-    //login
+    //login as current user. -U {Username}
 
     \list
     // or \l
@@ -134,10 +134,24 @@ Services {{
     \d
     //list of tables
    }}
+   SQLite {{
+
+    sqlite3 {filename}
+    //opens sqlite database
+
+    .tables
+    //lists all tables
+
+   }}
    General SQL {{
 
     select * from {table}
     //display everything in table
+
+	# CREATE TABLE demo(t text);
+	# COPY demo from '[FILENAME]';
+	# SELECT * FROM demo;
+	# DROP TABLE demo;
 
 
    }}
@@ -156,4 +170,7 @@ identify -verbose {filename}
 
 ffmpeg -i {filename} -metadata {key}={value} -codec copy {outfile}
 //change audio or video metadata and copy to new file
+
+
+https://stackoverflow.com/questions/9464617/retrieving-and-saving-media-metadata-using-ffmpeg
 }}
