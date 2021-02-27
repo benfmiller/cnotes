@@ -16,14 +16,26 @@ mimeopen {filename}
 //opens file with prefered program, -a asks which program, -d asks and sets default
 
     System {{
-    ps -edf
-    // shows details of running processes
+        sudo {{
+        ps -edf
+        // shows details of running processes
 
-    su - {username}
-    the - logs in as if it's a fresh login
+        su - {username}
+        the - logs in as if it's a fresh login
 
-    su {account}
-    // then enter password to log in to account
+        su {account}
+        // then enter password to log in to account
+
+        sudo -l
+        // lists actions you can perform
+
+        sudo -u {username} {command}
+        //execute command as username
+
+        }}
+
+    chmod +xs {filename}
+    //set setgit bit
 
     which {command}
     // prints aliases, functions, or destination of executable
@@ -41,6 +53,10 @@ mimeopen {filename}
 
     find . -name .bash_history -exec grep -A 1 '^passwd' {} \;
     // find {filename} ^ makes it not
+    //executes comand on each file found
+
+    find {dir} -name {filename} -exec {command} {} \;
+    //calls command on each match, if using bash calls bash as many matches are found
 
     find / -type d -name dirname
     // finds directory name
@@ -97,6 +113,15 @@ grep -q {Pattern} {filename}
 // returns true if pattern not found in command output
 
 }}
+    awk {{
+
+    awk '{print $1}' {filename}
+    //prints first item in filename
+
+    awk 'BEGIN {system("/bin/bash")}'
+    //starts bash from awk
+
+    }}
 
 }}
 Services {{
@@ -173,4 +198,30 @@ ffmpeg -i {filename} -metadata {key}={value} -codec copy {outfile}
 
 
 https://stackoverflow.com/questions/9464617/retrieving-and-saving-media-metadata-using-ffmpeg
+}}
+Programming Langs {{
+    Perl{{
+    perl -e 'print `bash`'
+    // back ticks are system commands. single quote treats expression as a whole. " evaluates backticks first
+    }}
+    Python {{
+    from subprocess import call
+    call(['bash'])
+
+    import os
+    os.system('bash')
+    }}
+    Ruby {{
+    ruby -e 'require "irb" ; IRB.start(__FILE__)'
+    `[COMMAND]`
+    //runs system command
+    }}
+    node {{
+    node -e '...' followed by valid JavaScript code
+
+    var exec = require('child_process').exec;
+    exec('[COMMAND]', function (error, stdOut, stdErr) {
+    console.log(stdOut);
+    });
+    }}
 }}
