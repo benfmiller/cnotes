@@ -142,3 +142,18 @@ Services {{
 
    }}
 }}
+Audio and Video {{
+1TODO
+EXIF
+exif {filename}
+//display and change EXIF data of an image. For those wondering, EXIF (stands for Exchangeable Image File Format) is typically a JPEG file
+
+1TODO
+ImageMagick
+identify -verbose {filename}
+//lists metadata
+
+
+ffmpeg -i {filename} -metadata {key}={value} -codec copy {outfile}
+//change audio or video metadata and copy to new file
+}}
