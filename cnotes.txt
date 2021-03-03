@@ -15,6 +15,9 @@ Commands used {{
 mimeopen {filename}
 //opens file with prefered program, -a asks which program, -d asks and sets default
 
+hexdump
+//pipe echo into it and get hex chars
+
     System {{
         sudo {{
         ps -edf
@@ -90,6 +93,8 @@ mimeopen {filename}
     john {filename}
     //auto detects format if it can
 
+    echo -n "wordtohash" | md5sum
+    // -n emits trailing new line and this outputs hash of wordtohash
         Encryption types {{
         DES (you can tell by the size and format of it). This is common on very old systems and it's very weak (especially since only the first 8 bytes of the password are kept)
 
@@ -199,6 +204,7 @@ ffmpeg -i {filename} -metadata {key}={value} -codec copy {outfile}
 
 https://stackoverflow.com/questions/9464617/retrieving-and-saving-media-metadata-using-ffmpeg
 }}
+
 Programming Langs {{
     Perl{{
     perl -e 'print `bash`'
@@ -224,4 +230,16 @@ Programming Langs {{
     console.log(stdOut);
     });
     }}
+}}
+
+ptlab tips {{
+    XSS {{
+    1234'"<t>
+    //try this payload instead cause it is easier to see encodings and stuff
+    //then iterate
+    //look at source
+    //don't fuzz blindly
+
+    }}
+
 }}
