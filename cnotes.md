@@ -6,8 +6,48 @@ thank god removes bash screen blind
 
 }}
 # WSL {{
+
+## powershell {{
+wsl --list -v
+// verbose list
+
+wsl --shutdown {distname}
+//shutsdown distname
+}}
+
 explorer.exe .
 //opens windows file explorer in current directory
+
+
+## kex {{
+kali-win-kex
+
+kex --sl -s
+// sl mode, requires resolv.conf nameserver to be default for wsl, make sure firewall lets stuff through
+// firefox crashes the server?
+// might need to remove logs in tmp? look at them?
+
+kex --win
+// win mode
+kex --esm
+// remote desktop mode
+
+kex --start-sound
+// tries to start sound
+
+kex kill
+kex stop
+}}
+
+vncserver -SecurityTypes None
+// starts vncserver with no password
+
+vncserver --kill
+//kills, need to specify which one if more than one
+
+vncserver
+//starts server
+
 }}
 
 # Commands used {{
@@ -36,6 +76,9 @@ sudo -u {username} {command}
 //execute command as username
 
 }}
+
+sudo service {servicename} start
+// stop, restart, stuff: service instead of systemctl
 
 chmod +xs {filename}
 //set setgit bit
