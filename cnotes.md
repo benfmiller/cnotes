@@ -275,4 +275,20 @@ exec('[COMMAND]', function (error, stdOut, stdErr) {
 console.log(stdOut);
 });
 }}
+## PHP {{
+"//"
+//Comment
+
+"."
+//String Concatenation
+
+system("ls")
+//Run ls on system
+
+### Vulnerabilities {{
+PCRE_REPLACE_EVAL (/e) his modifier will cause the function preg_replace to evaluate the new value as PHP code, before performing the substitution.
+
+PCRE_REPLACE_EVAL has been deprecated as of PHP 5.5.0
+}}
+}}
 }}
