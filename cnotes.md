@@ -59,9 +59,19 @@ hexdump
 //pipe echo into it and get hex chars
 
 ## System {{
-### sudo {{
+
 ps -edf
 // shows details of running processes
+
+ss -tupln
+// shows listening ports, may require sudo
+
+ufw allow {port}/{protocol}
+// allows port through firewall, may require sudo
+
+ping {ip-address} -t
+// -t pings only
+### sudo {{
 
 su - {username}
 the - logs in as if it's a fresh login
@@ -266,6 +276,9 @@ os.system('bash')
 ruby -e 'require "irb" ; IRB.start(__FILE__)'
 `[COMMAND]`
 //runs system command
+
+"+"
+//String Concatenation
 }}
 ## node {{
 node -e '...' followed by valid JavaScript code
