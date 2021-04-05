@@ -60,8 +60,14 @@ hexdump
 
 ## System {{
 
+lsb_release -dc
+// prints release information
+
 ps -edf
 // shows details of running processes
+
+ps --no-headers -o comm 1
+// Shows init system
 
 ss -tupln
 // shows listening ports, may require sudo
@@ -314,4 +320,6 @@ PCRE_REPLACE_EVAL (/e) his modifier will cause the function preg_replace to eval
 PCRE_REPLACE_EVAL has been deprecated as of PHP 5.5.0
 }}
 }}
+
+try `uname`, or $(uname) or system('uname')
 }}
