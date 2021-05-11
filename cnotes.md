@@ -103,7 +103,10 @@ which {command}
 // prints aliases, functions, or destination of executable
 
 id {user, optional}
-prints details about current user or details about user given
+// prints details about current user or details about user given
+
+uuidgen
+// generated new uuid/guid
 
 }}
 ## files {{
