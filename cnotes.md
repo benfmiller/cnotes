@@ -60,6 +60,12 @@ hexdump
 
 ## System {{
 
+nvidia-smi
+//prints gpu usage
+
+nvidia-smi -l 1
+//prints gpu usage every second
+
 lsb_release -dc
 // prints release information
 
