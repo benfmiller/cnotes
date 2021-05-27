@@ -76,6 +76,10 @@ hexdump
 
 ## System {{
 
+watch -n 2 sensors
+//shows system sensors
+// might require install lm-sensors
+
 nvidia-smi
 //prints gpu usage
 
