@@ -1,3 +1,7 @@
+# Powershell {{
+While(1) {ps | sort -des cpu | select -f 15 | ft -a; sleep 1; cls}
+> // This shows cpu time, which is like cpu usage
+}}
 # Git Bash {{
 
 .inputrc
