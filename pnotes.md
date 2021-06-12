@@ -9,10 +9,15 @@ XSS {{
 Registration {{
 Try with a capital letter of spaces afterward because mysql will lowercase and remove trailing spaces but code may not
 }}
-# Cargo {{
-cargo doc -p {dependency} --open
-// builds docs for dependency and opens in browser
+File Include {{
+http://assets.pentesterlab.com/test_include.txt
+//tests phpinfo
 
-cargo doc --open
-// supposed to include all documentation for all dependencies, Sometimes does
+http://assets.pentesterlab.com/test_include_system.txt
+//&c=uname+-a      shows system command
+
+
+For LFI, you can get rid of the suffix using a NULL BYTE. For RFI, you can get rid of the suffix, by adding &blah= or ?blah= depending on your URL
+PHP now correctly handles paths and they cannot be poisoned using a NULL BYTE, as they used to.
 }}
+login forms, check null values ( remove parameters )
