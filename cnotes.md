@@ -110,6 +110,10 @@ ufw allow {port}/{protocol}
 
 ping {ip-address} -t
 // -t pings only
+
+ip addr show eth0 | grep inet | awk '{ print $2; }' | sed 's/\/.*$//'
+// finds public ip address
+
 ### sudo {{
 
 su - {username}
