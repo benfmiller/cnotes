@@ -66,7 +66,7 @@ gem install jekyll bundler
 bundle exec jekyll serve
 }}
 
-# Commands used {{
+# Commands {{
 
 mimeopen {filename}
 //opens file with prefered program, -a asks which program, -d asks and sets default
@@ -74,6 +74,13 @@ mimeopen {filename}
 hexdump
 //pipe echo into it and get hex chars
 
+## Managing Users {{
+Sudo adduser {username}
+
+chown - change owner
+chgrp - change group
+
+}}
 ## System {{
 
 watch -n 2 sensors
@@ -215,9 +222,49 @@ awk 'BEGIN {system("/bin/bash")}'
 //starts bash from awk
 
 }}
+## Firewall {{
+sudo ufw default deny incoming
+// blocks all incoming connections by default
+
+sudo ufw default allow outgoing
+
+sudo ufw allow ssh
+// this defaults to port 22
+
+sudo ufw allow 2222/tcp
+// use this if ssh listens on different port
+
+sudo ufw allow www
+// allows http server
+
+sudo ufw enable
+
+sudo ufw status
+}}
 
 }}
-# Services {{
+# Audio and Video {{
+1TODO
+EXIF
+exif {filename}
+//display and change EXIF data of an image. For those wondering, EXIF (stands for Exchangeable Image File Format) is typically a JPEG file
+
+1TODO
+ImageMagick
+identify -verbose {filename}
+//lists metadata
+
+
+ffmpeg -i {filename} -metadata {key}={value} -codec copy {outfile}
+//change audio or video metadata and copy to new file
+
+
+https://stackoverflow.com/questions/9464617/retrieving-and-saving-media-metadata-using-ffmpeg
+
+ffprobe -v quiet -print_format json -show_format -show_streams {filename}
+}}
+
+# SQL {{
 ## MySQL {{
 
 mysql -u root
@@ -274,27 +321,6 @@ select * from {table}
 
 }}
 }}
-# Audio and Video {{
-1TODO
-EXIF
-exif {filename}
-//display and change EXIF data of an image. For those wondering, EXIF (stands for Exchangeable Image File Format) is typically a JPEG file
-
-1TODO
-ImageMagick
-identify -verbose {filename}
-//lists metadata
-
-
-ffmpeg -i {filename} -metadata {key}={value} -codec copy {outfile}
-//change audio or video metadata and copy to new file
-
-
-https://stackoverflow.com/questions/9464617/retrieving-and-saving-media-metadata-using-ffmpeg
-
-ffprobe -v quiet -print_format json -show_format -show_streams {filename}
-}}
-
 # Programming Langs {{
 ## Perl{{
 perl -e 'print `bash`'
