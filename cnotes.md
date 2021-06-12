@@ -349,6 +349,15 @@ PCRE_REPLACE_EVAL (/e) his modifier will cause the function preg_replace to eval
 PCRE_REPLACE_EVAL has been deprecated as of PHP 5.5.0
 }}
 }}
+Rust {{
+Cargo {{
+cargo doc -p {dependency} --open
+// builds docs for dependency and opens in browser
+
+cargo doc --open
+// supposed to include all documentation for all dependencies, Sometimes does
+}}
+}}
 
 try `uname`, or $(uname) or system('uname')
 }}
