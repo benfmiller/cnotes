@@ -65,6 +65,15 @@ gem install jekyll bundler
 
 bundle exec jekyll serve
 }}
+# Vagrant {{
+vagrant up
+// in directory with vagrant file
+
+vagrant ssh
+// ssh into vagrant box
+
+//Look at vagrant file for example stuff!
+}}
 
 # Commands {{
 
@@ -247,6 +256,7 @@ sudo ufw status
 }}
 
 }}
+
 # Audio and Video {{
 1TODO
 EXIF
@@ -314,8 +324,61 @@ sqlite3 {filename}
 }}
 ## General SQL {{
 
-select * from {table}
-//display everything in table
+    Examples {{
+        Selects {{
+
+            select * from {table}
+            //display everything in table
+
+            select max(name) from animals;
+
+            select * from animals limit 10
+
+            select * from animals where species = 'orangutan' order by birthdate
+
+            select name from animals where species = 'orangutan' order by birthdate desc
+
+            select name, birthdate from animals order by name limit 10 offset 20
+            // offset is number of rows to skip
+
+            select species, min(birthdate) from animals group by species
+
+            '''
+            select name, count(*) as num from animals
+            group by name
+            order by num desc limit 5
+            '''
+            // as num returns the result of count(*) and gives it the column title num
+
+            //... group by columns
+            //Change the behavior of aggregations such as max, count, and sum. With group by,
+            //the aggregation will return one row for each distinct value in columns.
+
+            // use group by whenever you use an aggregation
+
+        }}
+        Joins {{
+
+            select name from animals join diet on animals.species = diet.species where diet.food = 'fish';
+            select name from animals, diet where animals.species = diet.species and diet.food = 'fish';
+            // equivalent
+
+        }}
+        insert into table ( column1, column2, ... ) values ( val1, val2, ... );
+
+        update table set column = value where restriction;
+        // restriction is same as select
+
+        delete from table where restriction;
+        // restriction is same as select
+
+        %match%
+        // like operator "%" like the * regex
+
+        The having clause works like the where clause, but it applies after group by aggregations take place.
+        The syntax is like this: select columns from tables group by column having condition ;
+    }}
+
 
 \# CREATE TABLE demo(t text);
 \# COPY demo from '[FILENAME]';
