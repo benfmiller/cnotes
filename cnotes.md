@@ -377,6 +377,12 @@ sqlite3 {filename}
 
         The having clause works like the where clause, but it applies after group by aggregations take place.
         The syntax is like this: select columns from tables group by column having condition ;
+
+        select products.name, products.sku, count(sales.sku) as num
+          from products left join sales
+            on products.sku = sales.sku
+          group by products.sku;
+        //counts sales for all products
     }}
 
 
