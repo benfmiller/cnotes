@@ -142,6 +142,10 @@ sudo -u {username} {command}
 sudo service {servicename} start
 // stop, restart, stuff: service instead of systemctl
 
+sudo update-rc.d {servicename} defaults
+// sets service to start at boot
+// might need to use "enable" instead of "defaults"
+
 chmod +xs {filename}
 //set setgit bit
 
