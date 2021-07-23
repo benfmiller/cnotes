@@ -9,3 +9,6 @@ Soon projects:
 
 Things to Learn:
 - docker
+
+Things to do:
+- add udacity to resume
