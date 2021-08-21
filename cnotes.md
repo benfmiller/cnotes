@@ -22,6 +22,8 @@ wsl --shutdown {distname}
 explorer.exe .
 //opens windows file explorer in current directory
 
+wslview [filename]
+// opens file with windows default app
 
 ## kex {{
 kali-win-kex
