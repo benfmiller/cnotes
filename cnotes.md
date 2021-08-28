@@ -181,6 +181,11 @@ find / -type d -name dirname
 diff {filename1} {filename2}
 // prints all differences between two files
 
+pandoc MANUAL.txt -o example13.pdf
+pandoc MANUAL.md -o example13.pdf
+//to render markdown or text as pdf
+// sudo apt-get install pandoc texlive-latex-base texlive-fonts-recommended texlive-extra-utils texlive-latex-extra
+
 }}
 ## Zips {{
 cpio -idv --no-absolute-filename < {filename}
