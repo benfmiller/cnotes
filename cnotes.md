@@ -265,7 +265,16 @@ sudo ufw enable
 
 sudo ufw status
 }}
-
+## Informational {{
+type - indicate how a command name is interpreted
+which - display which executable program will be executed
+help - get help for shell builtins
+man - display a command's manual page
+apropos - display a list of appropraite commands
+info - display a command's info entry
+whatis - display one-line manual page descriptions
+alias - create an alias for a command
+}}
 }}
 
 # Audio and Video {{
