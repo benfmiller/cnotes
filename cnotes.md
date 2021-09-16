@@ -85,6 +85,12 @@ mimeopen {filename}
 hexdump
 //pipe echo into it and get hex chars
 
+{command} &> {outfile}
+//redirects both standard output and standard error
+
+{command} 2> /dev/null
+//throw away errors
+
 ## Managing Users {{
 Sudo adduser {username}
 
@@ -266,14 +272,45 @@ sudo ufw enable
 sudo ufw status
 }}
 ## Informational {{
-type - indicate how a command name is interpreted
-which - display which executable program will be executed
-help - get help for shell builtins
-man - display a command's manual page
-apropos - display a list of appropraite commands
-info - display a command's info entry
-whatis - display one-line manual page descriptions
-alias - create an alias for a command
+    ### Help with Commands {{
+
+    type - indicate how a command name is interpreted
+    which - display which executable program will be executed
+    help - get help for shell builtins
+    man - display a command's manual page
+    apropos - display a list of appropraite commands
+    info - display a command's info entry
+    whatis - display one-line manual page descriptions
+    alias - create an alias for a command
+    }}
+    uniq - report or omit repeated lines
+    wc - print newline, word, and byte counts for each file
+    ### Mount a disk {{
+
+    fdisk -l
+    //list partitions
+
+    fdisk {disk in /dev}
+    // runs fdisk menu
+
+    mkfs.ext4 {/dev/sda3}
+
+    mkdir {place}
+
+    mount {device} {directory}
+
+    umount {directory}
+
+    e2label {device} {CAPS LABEL}
+    // change label
+
+    blkir
+    // list lock devices
+
+    vi /etc/fstab
+    copy uuid to here, mount point, ext4, {mount options: defaults}, {dump command: 0}, {fsck order: 1}
+
+    }}
 }}
 }}
 
