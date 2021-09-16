@@ -314,6 +314,63 @@ sudo ufw status
     // parses /etc/fstab and mounts, finds syntax errors
 
     }}
+### File related commands {{
+
+cp source source destination
+mv source source destination
+touch filename
+mkdir dirname (-p very handy)
+rmdir dirname
+rm (-rf)
+ln -s existingfile newlink
+File archive related commands
+}}
+### File archive related commands {{
+
+gzip filename
+gunzip filename.gz
+xz filename
+xz -d filename.xz
+tar -cvzf OR -xvzf (.tar.gz files)
+tar -cvJf OR -xvJf (tar.xz files)
+Network related commands
+}}
+### Network related commands {{
+
+wget - Web downloader
+links - Text based browser
+scp - Secure copy
+rsync - Remote copy with ssh
+rdiff-backup - Remote copy with history
+ping - Send ICMP ECHO_REQUEST to network hosts
+traceroute - Print the route packets trace to network host
+ssh - Secure SHell
+Utility commands
+}}
+### Utility commands {{
+
+grep - Print lines matching a pattern
+less - less is more screen reader
+more - if less isn't there, use more
+cut - Remove sections from each line of files
+diff - Find differences between two files
+split - split a file into pieces
+cat - Concatenate files
+ldd - Print shared library dependencies
+which - Shows the full path of (shell) commands
+locate - Find files by name (uses updatedb generated database)
+find - Search for files in a directory hierarchy
+System Admin related commands
+}}
+### System Admin related commands {{
+
+useradd - Create a new user account
+userdel - Delete user, -r flag handy
+vipw/vigr - Edit with locking
+setup - Front-end menu program for other tools
+system-config-whatever
+TUI vs. GUI
+}}
 }}
 }}
 
