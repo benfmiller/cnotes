@@ -310,6 +310,9 @@ sudo ufw status
     vi /etc/fstab
     copy uuid to here, mount point, ext4, {mount options: defaults}, {dump command: 0}, {fsck order: 1}
 
+    mount -a
+    // parses /etc/fstab and mounts, finds syntax errors
+
     }}
 }}
 }}
