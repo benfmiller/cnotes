@@ -906,7 +906,7 @@ Additional Resources
 Distrowatch's Package Management Cheatsheet file
 http://distrowatch.com/dwres.php?resource=package-management
 }}
-# Process and Resource Management {{
+## Process and Resource Management {{
 LaUSAH REFERENCE - Chapter 5, Controlling Processes
 TLCL REFERENCE - Chapter 11, Processes
 
@@ -1061,5 +1061,129 @@ cgroups and systemd
     or https://www.youtube.com/watch?v=-25oWssr9WI (included at end of lecture screencast video)
 
     And here is an optional video for anyone wanting to learn more about cgroup management with systemd from the recent linux.conf.au 2017: Managing performance parameters through systemd (YouTube)
+}}
+## Init System & Services {{
+
+Alternative init systems
+
+    There are other multiple init systems used by the various Linux distributions. Some distributions, particularly those styled after BSD, may use a single config file that has to be updated whenever services are added/removed.
+
+    A former Canonical (the company that sponsors the Ubuntu Linux distribution) employee named Scott James Remnant created upstart.  Ubuntu historically had a SysV-based init system but switched to upstart several releases ago.
+
+    Fedora historically used a SysV-based init system.  After upstart came out, they switched to it... although at the time upstart was not very complete and was primarily configured in SysV-compatibility mode.
+
+    5+ years ago, Red Hat employee and Fedora developer Lennart Poettering did a survey of the various init systems available for various flavors of Unix/Linux.  He compared features and performance and then created a new init system named systemd.  systemd is designed to be a modern init system specifically for Linux... and as such it takes advantage of some Linux-only features... which makes it less portable.  Some advanced things that systemd does is parallel execution, socket and dbus service activation, automatic cgroup resource management / scheduling, and multi-seat support.  It has a system boot profiler with graphing and by disabling unneeded (and / or slow) services, you can greatly speed up your boot times.  systemd has had "feature creep" set in and it has expanded beyond traditional init features.  Another one of its goals is to do common system configuration (hostname, file system mounting, etc) and do it in a distribution agnostic way.  systemd also has man security enhancement features.
+
+    MANY DISTRIBUTIONS HAVE SWITCHED TO SYSTEMD INCLUDING ALL OF THE TOP, MAINSTREAM DISTRIBUTIONS LIKE RHEL, FEDORA, DEBIAN, UBUNTU, MINT, ARCH, ETC.  GENTOO DEFAULTS TO A DIFFERENT INIT SYSTEM NAMED OPENRC.  A GROUP OF DISGRUNTLED-OVER-SYSTEMD USERS FORKED DEBIAN AND CREATED DEVUAN.
+
+systemd
+
+    cgroups - As I talked about near the end of the Process and Resource Management lecture, systemd is an enabler for cgroups and starts everything in a cgroup.  As a result the resource usage of CPU, RAM, and DISK are dynamically tunable (network coming in the future).  cgroups makes it easier and faster to reliably stop services.
+
+    journald - systemd decided to take on the logging facilities and as a result of the logging system being integrated into the init system and being able to have better access to the kernel, it can log all kernel messages including full startup and shutdown... a feat that was previously impossible.  It also uses a signle binary log file with database like functionality.  You can still run a traditional syslog program in parallel if desired to get the old-school, standard single log file per service text logs.  more abut logging in a separate lecture.
+
+    unit and target files - The traditional / original Unix / Linux init system SysVinit used shell scripts to control all services and there are many drawbacks.  systemd abandoned shell scripts and has much smaller, declarative configuration files named unit files.  SysVinit init had runlevels.  systemd abandoned runlevels and uses target files instead.  Available targets are emergency, rescue, multi-user (text-console only) and graphical (like multi-user but with a graphical login added).
+
+    core os concept - systemd decided to go beyond the strict boundaries of the traditional init system to incorporate more features that made sense for a system trying to make services and resources manageable.  The expansion of features has been dubbed, "Core OS" (not to be confused with the CoreOS Linux distribution) in that it tries to make common tasks the same across all distributions that use systemd.  There used to be several different programs used by distros for such things as logging in, managing user sessions, watchdog, cron, logging, setting the hostname etc.  This the most contentious aspect of systemd as some users think it has gone to far.
+
+systemd programs / commands
+
+    The main control program for systemd is systemctl.
+
+    systemctl --full --all (lists everything)
+    systemctl enable {servicename}
+    systemctl disable {servicename}
+    systemctl status {servicename}
+    systemctl start {servicename}
+    systemctl stop {servicename}
+    systemctl restart {servicename}
+    systemctl mask {servicename (sysmlinks to /dev/null)
+    systemctl get-default (shows default target)
+    systemctl set-default {targetname} (changes the default target)
+    sysmtectl isolate {targetname} (change target)
+    sytemctl edit (add drop-in files for service customization)
+}}
+## Backups {{
+TLCL REFERENCE - Chapter 18, Archiving and Backups
+
+While there are a number of "backup" applications, both FOSS and commercial / proprietary, the vast majority of them add a bit of overhead to the process as well as have their own obfuscated data storage methods. As a result, a number of simple yet effective file system tools have been developed.
+
+Hard drive sizes have greatly increased over the last few years but backup tapes have not had the same storage capacity jumps. As a result, I prefer to backup to hard disk rather than tape. Most advanced tape backup systems now recommend having an intermediate storage system usually based on hard disks so you can backup more quickly (freeing the backup source sooner) and then spool to tape at a usually slower rate.
+
+Some FOSS file-based backup applications include:
+    BackupPC - http://backuppc.sourceforge.net/
+    Backula - http://www.bacula.org/
+    Zmanda - http://www.zmanda.com/ (commercially supported Amanda)
+
+tar - The GNU version of the tar archiving utility
+    tar -cvzf /desired/destination/path/and/filename.tar.gz /path/to/backup
+    tar -cvJf /desired/destination/path/and/filename.tar.xz /path/to/backup
+    tar -I zstd -cvf /desired/destination/path/and/filename.tar.zstd /path/to/backup (is the zstd package installed?  If not, you can install it)
+
+scp - Secure copy (remote file copy program), overwrites destination files
+    scp file1 file2 dir1/ dir2/ user@remotehost:/full/path/to/backup/directory/
+
+    Common flags:
+        -l - limit rate specified in Kbits/s
+        -P - port
+        -p - preserves modification times, access times, and modes from the original file
+        -r - recursively copy
+
+rsync - A fast, versatile, remote (and local) file-copying tool
+    rsync is a file-based mirroring program that can use the local filesystem or a remote filesystem for the destination. If a remote system is selected then the transmission takes places over encrypted ssh. rsync is very efficient and uses an algorithm created by Andrew Tridgell who is best known for his work on samba. The algorithm does not come into play on the first transfer but does upon subsequent transfers... where it will try to only transfer changed files and then only the changed pieces.
+
+    The most commonly used flags are:
+        -a - archive mode; equals -rlptgoD (no -H,-A,-X)
+        -v - verbose
+        -S, --sparse - handle sparse files efficiently
+        --delete - delete extraneous files from dest dirs
+        --exclude=PATTERN - exclude files matching PATTERN
+        --bwlimit=KBPS - limit I/O bandwidth; KBytes per second
+
+    Example:
+        rsync -avS \
+        --progress \
+        --delete \
+        --exclude=/dev \
+        --exclude=/proc \
+        --exclude=/mnt \
+        --exclude=/sys \
+        --exclude=/media \
+        --exclude=/tmp \
+        root@sourcehost:/ \
+        /backups/hostname/
+
+borgbackup - Chunk-based backup program.
+    Packaged by most Linux distros and written in Python. Also available for macOS. Maybe Windows someday?
+
+    Features:
+              Block based with encryption, compression, and de-duplication – all done on the client side – you can store your backups on systems you don’t trust if encrypted.
+              Push from client to backup host
+              Provides FUSE-based mount-from-backup option
+
+    Examples:
+        Create / initialize repository:
+             borg --verbose init --encryption=repokey user@backuphost:/path/to/repository/reponame
+        Create a backup / archive:
+             borg --progress --verbose create -C zstd,5 -e /dev -e /run -e /tmp -e /sys -e /proc -e /mnt -e /media -e /var/log -e /var/cache \
+             -s user@backuphost:/path/to/repository/reponame::$(date +%Y%m%d) /
+
+    Usage:
+        # Setup ssh-key-based auth for backup user and...
+        export BORG_PASSPHRASE="supersecretpassword"
+        export BORG_REPO="user@backuphost:/path/reponame"
+
+        /bin/borg create -C zstd,5 -s ::$(date +%Y%m%d) /etc /root /home
+
+Imaging Software - bit-by-bit copy rather than file-based
+    Disk image-based backup utilities are really good for cloning systems. The main disadvantage of using disk imaging software is that they usually can only backup a partition / disk if it is not in use. Often disk image-backup software is run by booting from an alternative partition or live media.
+
+    Some FOSS imaging applications include:
+        clonezilla (partclone) - http://clonezilla.org/
+        dd and ddrescue
+
+        Some "missing features" in the free programs: 1) Can't mount the image file(s) and alter them and 2) Can't clone a larger to smaller
+        There are a number of commercial / closed source products and they include Ghost, Acronis True Image, etc.
+        See: http://en.wikipedia.org/wiki/Disk_cloning
 }}
 }}
