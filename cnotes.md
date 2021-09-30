@@ -77,6 +77,9 @@ vagrant ssh
 //Look at vagrant file for example stuff!
 }}
 
+/usr/bin/setxkbmap -option "ctrl:nocaps"
+//include in profile to map ctrl to caps
+
 # Commands {{
 
 mimeopen {filename}
@@ -190,7 +193,7 @@ diff {filename1} {filename2}
 pandoc MANUAL.txt -o example13.pdf
 pandoc MANUAL.md -o example13.pdf
 //to render markdown or text as pdf
-// sudo apt-get install pandoc texlive-latex-base texlive-fonts-recommended texlive-extra-utils texlive-latex-extra
+// sudo apt-get install pandoc texlive-latex-base texlive-fonts-recommended texlive-extra-utils texlive-latex-extra texlive-science
 
 }}
 ## Zips {{
