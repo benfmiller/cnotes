@@ -1,4 +1,5 @@
-# Powershell {{
+#
+Powershell {{
 While(1) {ps | sort -des cpu | select -f 15 | ft -a; sleep 1; cls}
 > // This shows cpu time, which is like cpu usage
 }}
@@ -79,6 +80,16 @@ vagrant ssh
 
 /usr/bin/setxkbmap -option "ctrl:nocaps"
 //include in profile to map ctrl to caps
+
+i3 {{
+sudo add-apt-repository -y ppa:regolith-linux/stable
+sinstal i3-gaps
+
+sinstal i3status
+sinstal i3blocks
+
+https://kifarunix.com/install-and-setup-i3-windows-manager-on-ubuntu-20-04/
+}}
 
 # Commands {{
 
