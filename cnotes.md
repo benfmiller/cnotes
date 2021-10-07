@@ -87,6 +87,10 @@ sinstal i3-gaps
 
 sinstal i3status
 sinstal i3blocks
+sinstal playerctl
+sinstal flameshot
+
+sudo apt-get install lxappearance gtk-chtheme
 
 https://kifarunix.com/install-and-setup-i3-windows-manager-on-ubuntu-20-04/
 }}
