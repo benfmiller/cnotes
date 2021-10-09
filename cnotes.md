@@ -91,9 +91,12 @@ sinstal playerctl
 sinstal flameshot
 sinstal compton
 
+// for lock on screen close
+sinstal xss-lock
+
 sudo apt-get install lxappearance gtk-chtheme
 
-apt install feh fonts-font-awesome rofi pulseaudio-utils xbacklight alsa-tools clipit gcc git terminator locate pcmanfm libnotify-bin
+apt install feh fonts-font-awesome rofi pulseaudio-utils xbacklight alsa-tools clipit gcc git terminator locate pcmanfm libnotify-bin acpi
 
 // look at rcfiles/config/X11 to find the intel_backlight thing for xbacklight
 
