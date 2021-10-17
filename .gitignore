@@ -1,5 +1,5 @@
 *.swp
-Session.vim
+*Session*.vim
 no_clude*
 clrepos
 **/TODO.md
