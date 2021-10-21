@@ -694,7 +694,7 @@ System Admin related commands
         TUI vs. GUI
 }}
 }}
-# up to quiz 2 {{
+# Onward {{
 ## Understanding file/dir ownership and permissions {{
 References:
 UaLSAH REFERENCE - Chapter 6, The File System
@@ -1607,5 +1607,96 @@ journalctl Examples
 journalctl presentation video by Lennart Poettering
 
     https://www.youtube.com/watch?v=i4CACB7paLc
+}}
+# Automation with Cron {{
+REFERENCES
+
+    RHEL7 System Administrators Guide
+         Chapter 24, Automating System Tasks (PDF)
+
+BACKGROUND
+
+    cron is a standard UNIX daemon that runs specified programs at scheduled times.
+    anacron is like cron but is aimed at machines that aren't on all the time.
+    at is a utility to schedule one-time tasks.
+    batch is like at except it only runs one-time jobs when the system load is low.
+
+CRON FILES
+
+    crontabs package -
+         Provides /etc/crontab and periodic directories.
+         [root@dowdle ~]# cat /etc/crontab (examine output)
+    cronie package -
+         An enhanced vixie-cron that provides cron service
+         [root@dowdle ~]# rpm -ql cronie (examine output)
+    What is the daemon binary? The service control script? Config files? Documentation?
+
+CRON ACCESS CONTROL
+
+    From crontab (1): If the cron.allow file exists, then you must be listed therein in order to be allowed to use this command.
+    If the cron.allow file does not exist but the cron.deny file does exist, then you must not be listed in the cron.deny file in order to use this command.
+    If neither of these files exists, only the super user will be allowed to use this command.
+
+THUS SAYS THE MAN PAGES
+
+    From crontab (5):
+    The format of a cron command... each line has five time and date fields, followed by a user name if this is the system crontab file, followed by a command.
+    Commands are executed by cron(8) when the minute, hour, and month of year fields match the current time, and at least one of the two day fields (day of month, or day of week) match the current time.
+    cron(8) examines cron entries once every minute.
+
+CRONTAB FORMAT
+
+    {minute} {hour day-of-month} {month} {day-of-week} {command}
+
+        minute - 0-59
+        hour - 0-23
+        day of month - 1-31
+        month - 1-12 (or names)
+        day of week - 0-7
+        (0 or 7 is Sun, or use names)
+
+    Ranges of numbers are allowed. Ranges are two numbers separated with a hyphen. The specified range is inclusive. For example, 8-11 for an "hours" entry specifies execution at hours 8, 9, 10 and 11.
+
+    Lists are allowed. A list is a set of numbers (or ranges) separated by commas.
+    Examples: "1,2,5,9", "0-4,8-12".
+
+    Step values can be used in conjunction with ranges. Following a range with "<number>" specifies skips of the number's value through the range.
+
+    For example, "0-23/2" can be used in the hours field to specify command execution every other hour.
+    Steps are also permitted after an asterisk, so if you want to say "every two hours", just use "*/2".
+
+    Names can also be used for the "month" and "day-of-week" fields.
+    Use the first three letters of the particular day or month (case doesn’t matter).
+    Ranges or lists of names are not allowed.
+
+    The "sixth" and last field specifies the command to run.
+
+        The entire command portion of the line, up to a newline or % character, will be executed by /bin/sh or by the shell specified in the SHELL variable of the cronfile.
+        Percent-signs (%) in the command, unless escaped with backslash (\), will be changed into newline characters, and all data after the first % will be sent to the command as standard input.
+
+USING CRONTAB
+
+    crontab -l = Lists your cron jobs
+    crontab -e = Create / modify your cron jobs
+    crontab -r = Deletes all cron jobs
+
+    Work with another user's crontab
+    crontab -u username -{additional-flag}
+
+EXAMPLES
+
+    */10 * * * * cd /var/yp; make 2>&1 > /dev/null;
+    11 2 * * * /usr/bin/wget -O - -q -t 1 http://{some-url}
+
+    # run system activity accounting tool every 10 minutes
+    */10 * * * * root /usr/lib64/sa/sa1 1 1
+
+    # generate a daily summary of process accounting at 23:53
+    53 23 * * * root /usr/lib64/sa/sa2 -A
+
+REVIEW FROM LOGGING MATERIAL
+
+    logwatch is run as a cron job. What file is used?
+    logrotate is run as a cron job. What file is used?
 }}
 }}
