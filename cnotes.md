@@ -126,8 +126,10 @@ Note
 	The order in which things are started is based on their dependencies — this particular script should start fairly late in the boot process, after a network is available (see the After section). You can configure different dependencies and orders based on your requirements.
 }}
 
+https://vpn.msu.montana.edu
+
 /usr/bin/setxkbmap -option "ctrl:nocaps"
-//include in profile to map ctrl to caps
+//include in .profile to map ctrl to caps
 
 i3 {{
 sudo add-apt-repository -y ppa:regolith-linux/stable
@@ -464,6 +466,13 @@ focus_on_window_activation focus
 }}
 
 }}
+
+// instructions to mount cifs drive
+https://markontech.com/linux/mount-a-network-shared-drive-on-linux/
+https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20(Command-line%20interface/Linux%20Terminal)%20-%20Uncomplicated,%20Simple%20and%20Brief%20Way!
+
+//fix root only writes
+https://ubuntuforums.org/showthread.php?t=1409720
 
 # Commands {{
 
