@@ -1699,4 +1699,94 @@ REVIEW FROM LOGGING MATERIAL
     logwatch is run as a cron job. What file is used?
     logrotate is run as a cron job. What file is used?
 }}
+# Server apps: Email {{
+LaUSAH
+  Chapter 18, Electronic Mail
+  Chapter 16, DNS: The Domain Name System, MX records
+
+RHEL7 System Administators Guide, Chapter 15, Mail Servers (PDF)
+
+What do you use for email?
+    What is provided by your ISP?
+    What is provided by MSU?
+    Free services like gmail, Hotmail, Yahoo!Mail?
+    What is provided by your work?
+
+What comprises an email system?
+    It used to be that you could simply install an SMTP server and you had an "email server". That is not the case any more. There are additional pieces that have been added to email over the last decade or so:
+
+    Virus scanning (ClamAV)
+    Spam scanning (SpamAssassin)
+    Webmail (RoundCube [ours])
+    Mobile Access
+    Collaboration tools
+        Global Addressbook
+        Calendaring
+        Documents
+        Resources
+        To-do lists
+    Mailing lists? Usually done by separate software like Mailman (python-based) and Sympa (perl-based)
+
+    Also common these days are backup mailservers for redundancy and relaying mailservers that act as filtering systems.
+
+How email works
+    DNS plays a big role in the flow of email. When a user@domain1.com sends an email to user@domain2.com a lot has to be in place for it to work. user@domain1.com's email client talks to its configured SMTP server which accepts the email for delivery. The SMTP server for domain1 has to look up the MX records for domain2. It then attempts to connect to the server with the lowest MX record value in an attempt to deliver it. If for whatever reason it can't deliver it to the first MX server, it will progress to the next MX IP with the lowest value. If all MX servers are unreachable, the SMTP server for domain1 will queue the email and try again later. Typically it tries every 4 hours for 4 days at which point it gives up.
+
+    What are the MX servers for your email account?  To find out do the following:
+
+    dig MX yourdomain.tld
+
+    Does your domain have more than one MX record?  What are their values?
+
+Various anti-spam tricks
+    I have seen a lot of crazy stuff done by email admins to reduce their amount of spam.
+
+    Adding MX records for servers that don't exist.
+    Automatically reject every first attempt (graylisting).
+    SPF and DKIM.
+    Auto reject systems where you have to get put on a whitelist.
+    Email is fundamentally broken and the only thing that can save it... is PKI.
+
+Looking for a complete package
+
+    No Linux distro I'm aware of offers a reasonable email system out of the box. Most offer some/many of the components I mentioned but none of them put them together in any integrated way. As a result a number of third party management / middleware systems have been created.
+
+A few that seem reasonable are:
+
+    Mailscanner (wikipedia)
+    Zimbra Collaboration Suite (wikipedia) [ours]
+    Zarafa (wikipedia)
+    Scalix (wikipedia)
+    Citadel (wikipedia)
+    Kolab (wikipedia)
+
+SMTP server software
+
+    sendmail
+    postfix (installed in our student VMs)
+    exim
+    qmail
+
+    Things SMTP servers need to be able to do:
+        Host multiple domains (virtual hosting)
+        Allow for user1@domain1 and user1@domain2 (virtual users)
+        Map multiple addresses to a single account (aliases)
+
+POP and IMAP
+
+    Dovecot
+    UW imap
+    Courier
+
+Email Client Programs
+
+    /usr/bin/mail - Provided by the mailx  program.  Very simple, line oriented client
+    alpine - Full-featured TUI client available in EPEL
+
+Email Related Configs
+
+    /etc/aliases - global aliases and forwards
+    ~/.foward - user defined aliases and forwards
+    /etc/postfix/* - postfix config location - since student VMs have Postfix installed
+}}
 }}
