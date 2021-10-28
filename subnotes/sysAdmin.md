@@ -1789,4 +1789,104 @@ Email Related Configs
     ~/.foward - user defined aliases and forwards
     /etc/postfix/* - postfix config location - since student VMs have Postfix installed
 }}
+# Server apps: Apache Intro {{
+LaUSAH REFERENCE - Chapter 19, Web Hosting
+
+RHEL8 Deploying Different Types of Servers, Chapter 1, Setting Up The Apache Web Server (PDF in weekly materials)
+
+    Brief History of Apache
+In the beginning, the father of the World Wide Web (Tim Berners-Lee) created the first web browser (WorldWideWeb) and the first web server (CERN HTTPd) for the NeXTSTEP platform. CERN HTTPd version 0.1 was released in June 1991. It was later ported to other flavors of Unix and OpenVMS. Version 3.0A was the final version released on July 15, 1996.
+
+Next came NCSA HTTPd written by Robert McCool and others. They also had one of the first graphical web browsers that was multi-platform and it was named Mosaic. Most of the NCSA folks left to start up Netscape... and as a result development of NCSA HTTPd and Mosaic languished. Mosaic was eventually licensed to several other browser makers (including Microsoft for Internet Explorer). Development of NCSA HTTPd was eventually stopped in 1998.
+
+Apache started life within the community that was left behind when the development of NCSA HTTPd stalled... and a series of patches for NCSA HTTPd were circulated mostly by email among the various community developers who remained. The group eventually decided to take all of their patches (a patchy server) and start over as the Apache project. Over time any of the original NCSA HTTPd code that remained was replaced. Version 2 of Apache was a substantial rewrite of the 1.x code.
+
+Today Apache continues to hold a prominent marketshare in the web server software market. The Feb. 2021 survey by Netcraft (1,204,252,411 sites, 263,042,054 unique domains) shows Apache in second place with a 26.32% marketshare with Microsoft IIS server in third place with 6.50%. The first place contender is another free software packaged named nginx with 34.54%.
+Perhaps more revealing are their numbers for "Market share of active sites" where Apache is leading with 25.48% and Microsoft IIS doesn't even place in the top four. nginx is in second place with 19.84%.
+Also of interest are their numbers for "Market share of the top million busiest sites" where Apache leads with 25.58% and Microsoft IIS is in fourth place with 6.87%. nginx is in second place with 23.21%.
+For more information see:
+
+    Netcraft's September 2020 Web Server Survey
+https://news.netcraft.com/archives/2021/02/26/february-2021-web-server-survey.html
+
+    Apache Basics
+Packages:
+httpd
+httpd-tools
+httpd-manual (if you want the web-based docs)
+mod_* (if you want any additional embedded functionality)
+
+    Popular add on packages:
+php* (used to be forked but is now PHP FastCGI Process Manager php-pfm)
+mod_perl (EPEL)
+mod_ssl
+
+    systemd unit file:
+/usr/lib/systemd/system/httpd.service
+/usr/lib/systemd/system/httpd@.service
+
+    Default ports:
+http: 80
+https: 443 (if mod_ssl is installed and configured)
+
+    Configuration files:
+/etc/httpd/conf/httpd.conf
+/etc/httpd/conf/*
+/etc/httpd/conf.d/*
+
+    Binaries: (some from httpd-tools)
+/usr/bin/ab
+/usr/bin/htpasswd
+/usr/bin/logresolve
+/usr/sbin/apachectl
+/usr/sbin/httpd
+/usr/sbin/rotatelogs
+/usr/sbin/suexec
+
+    Logs:
+/etc/logrotate.d/httpd
+/var/log/httpd/access_log, /var/log/httpd/error_log
+
+    Working directory:
+/var/www
+
+    Man pages:
+/usr/share/man/man1/ab.1.gz
+/usr/share/man/man1/htdbm.1.gz
+/usr/share/man/man1/htdigest.1.gz
+/usr/share/man/man1/htpasswd.1.gz
+/usr/share/man/man1/logresolve.1.gz
+/usr/share/man/man8/apachectl.8.gz
+/usr/share/man/man8/htcacheclean.8.gz
+/usr/share/man/man8/httpd.8.gz
+/usr/share/man/man8/rotatelogs.8.gz
+/usr/share/man/man8/suexec.8.gz
+
+The httpd-manual package contains a complete manual and reference guide that can also be found:
+http://httpd.apache.org/docs/2.4/
+
+Common configuration options
+DocumentRoot - /var/www/html
+UserDir - ~username
+ScriptAlias - Defines where scripts can run from
+          /var/www/cgi-bin
+Access controls with
+Directory - Per directory settings
+DirectoryIndex - What file is shown if directory is requested
+index.html
+index.php
+AccessFileName
+.htaccess (dynamic config changes)
+.htpasswd
+Location
+Complete customization of logging and error pages
+VirtualHost
+
+    Also of interest
+1) A nice write-up on the 25th anniversary of the WWW from Dec. 2015
+2) Tim Berners-Lee's Three challenges for the web from Mar. 2017 which includes:
+i. We’ve lost control of our personal data
+ii. It’s too easy for misinformation to spread on the web
+iii. Political advertising online needs transparency and understanding
+}}
 }}
