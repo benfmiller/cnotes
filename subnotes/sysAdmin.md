@@ -1889,4 +1889,137 @@ i. We’ve lost control of our personal data
 ii. It’s too easy for misinformation to spread on the web
 iii. Political advertising online needs transparency and understanding
 }}
+# Server apps: Apache hands-on HW 5 {{
+Goals for this hands on (aka Homework 5)
+
+We are going to do a few of the most common Apache configuration changes:
+
+Verify that apache (httpd) is installed and running
+We are going to enable user directories which allows users to create a directory within their home directory that apache can access with a ~username reference (Example: http://www.cs.montana.edu/~sdowdle)
+We are going to create a virtualhost as an example of a single apache server hosting multiple domain names
+Lastly we are going to install PHP and make sure it is working with apache
+All work is done on your own student VM.  Note, when you see "xx"  or "lastname" below,  you'll want to alter the content to reflect your own information.
+
+Getting Started
+
+Is apache installed? (rpm -q httpd)  If not, install it
+dnf  install httpd --refresh
+
+Is it set to run?  (systemctl status httpd.service)  If not, set enable it (systemctl enable httpd.service).
+Is it running?  (systemctl status httpd.service)  If it isn't running, start it. (systemctl start httpd.service)
+
+Verify your web server is working from the course server (links http://kvm-dowdle) [your name]
+
+Refresher on firewalld
+Did it work?  It shouldn't have because we have not opened up our VM's firewall yet.
+     firewall-cmd --list-all (shows what's open so far, shouldn't see http or https yet)
+     firewall-cmd --add-service=http ; firewall-cmd --add-service=http --permanent
+    firewall-cmd --list-all (Look good now?)
+
+Try again (from the course server):
+     links http://kvm-dowdle [your name]
+Working now?
+
+What showed up?
+
+Look at /etc/httpd/conf.d/welcome.conf and do what it says to disable the welcome page.
+
+Restart apache (systemctl restart httpd)
+
+Now browse to it again (links http://kvm-dowdle) [your name]
+
+What changed?
+
+Create an index page for your DocumentRoot:
+     nano -w /var/www/html/index.html
+Put inside of it "This is the web page for the default domain".
+
+UserDir
+
+Make a backup copy of your /etc/httpd/conf.d/userdir.conf file.  Do NOT end the backup filename in .conf or it will still be used by Apache.
+Edit the /etc/httpd/conf.d/userdir.conf file. Find the line that says:
+UserDir disable
+...and add a # to the front of it. Find the line that says:
+#UserDir public_html
+...and remove the comment.
+SELinux Booleans that need to be changed:
+      getsebool -a | grep httpd
+      Need to enable httpd_enable_homedirs and httpd_read_user_content
+           setsebool -P httpd_enable_homedirs on
+           setsebool -P httpd_read_user_content on
+
+Restart apache (systemctl restart httpd.service)
+Now create a public_html directory in one of your user directory as your user
+mkdir /home/lastname/public_html
+Make sure the permissions on your user's home directory are at least 711.
+Make sure the permissions on the public_html directory are at least 755.
+Create an index.html page inside of public_html.
+Browse to it:
+     links http://kvm-lastname/~lastname
+VirtualHost
+
+We will create a fake (i.e. using /etc/hosts for DNS resolution) host / domain named www.testdomain1.com.
+
+Edit the /etc/hosts file and add the following line:
+
+192.168.122.1xx       www.testdomain1.com          testdomain1
+192.168.122.1xx       kvm-lastname.localdomain     kvm-lastname
+You can find your ip address by looking at the output of the following command as root on your student VM:
+     ip add
+Or by looking in /etc/sysconfig/network-scripts/ifcfg-eth0
+
+Now we need to edit the /etc/httpd/conf/httpd.conf to enable VirtualHosts and add to virtualhost references... one for the default host and one for our new virutal domain.
+
+Edit /etc/httpd/conf/httpd.conf and add the following lines at the bottom of the configuration:
+
+<VirtualHost 192.168.122.1xx:80>
+     ServerName kvm-lastname.localdomain
+     DocumentRoot /var/www/html
+</VirtualHost>
+
+<VirtualHost 192.168.122.1xx:80>
+     ServerName www.testdomain1.com
+     DocumentRoot /var/www/testdomain1
+     CustomLog logs/testdomain1-access_log combined
+     ErrorLog logs/testdomain1-error_log
+</VirtualHost>
+
+Make sure any DocumentRoot directories you refer to exist:
+
+mkdir /var/www/testdomain1
+
+Put an index.html page in the testdomain1 directory
+
+  nano -w /var/www/testdomain1/index.html
+  Add to it the line "Hello from testdomain1" and save.
+
+Restart the webserver (systemctl restart httpd.service)
+
+Browse to your new domain
+links www.testdomain1.com
+Did it work?
+Installing PHP
+
+dnf install php
+After installing php do the following: systemctl enable --now php-fpm.service
+Restart the webserver (systemctl restart httpd.service)
+
+Put an index.php page into /var/www/testdomain1 and put inside it the following:
+
+<?PHP
+phpinfo();
+?>
+Browse to the new domain again. Did it work?  Why not?
+Let's try our default domain instead.
+Create an index.php file in /var/www/html/ and put in the same sample php code shown above and then browse to your default domain.
+     links http://localhost/   or links http://kvm-lastname/
+Which page showed up?  The index.html or the index.php page?
+Now explicitly browse to the index.php page.
+    links http://localhost/index.php or links http://kvm-lastname/index.php
+Did it work?
+
+Submitting Homework 5
+
+You can find the instructions here as /public/homework5.txt on the course server.  Feel free to copy it over to /root/HOMEWORK/ on your student VM.
+}}
 }}
