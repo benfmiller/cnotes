@@ -126,7 +126,8 @@ Note
 	The order in which things are started is based on their dependencies — this particular script should start fairly late in the boot process, after a network is available (see the After section). You can configure different dependencies and orders based on your requirements.
 }}
 
-https://vpn.msu.montana.edu
+https://unix.stackexchange.com/questions/255509/bluetooth-pairing-on-dual-boot-of-windows-linux-mint-ubuntu-stop-having-to-p
+// how to move bluetooth keys between dual boots
 
 /usr/bin/setxkbmap -option "ctrl:nocaps"
 //include in .profile to map ctrl to caps
