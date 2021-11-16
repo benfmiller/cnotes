@@ -2272,4 +2272,191 @@ When done with the homework:
 
     There is a /public/homework7.txt on the course server.  Just copy that to your ~/HOMEWORK/ directory on your student VM.
 }}
+# Virtualization: Overview {{
+LaUSAH REFERENCE - Chapter 24, Virtualization - Chapter 25, Containers
+
+The goal of this lecture is to introduce you to thes various virtualization products that are available for Linux and to compare and contrast them.
+
+Related but distinctly different topics include:Terminal Services and Application Virtualization
+
+Why Virtualize?
+
+    Increase hardware utilization
+    Improved resource management (configuration changes vs. hardware)
+    Cost and energy savings
+    Legacy OS / Applications won't run on new hardware
+    Easier migration because hardware is abstracted
+    Development and Testing
+    Less painful upgrades with easy rollback
+    Improved reliability with high availability / live or offline migration
+    Security by isolating services
+Use Cases
+
+    Desktop user - Trying out new OSes, Linux distro hopping
+    Small business - Servers and desktops
+    Enterprise business - Datacenters for cost and energy savings
+    Education - You have VMs and containers, right?
+    Research - Easily make environments and simulations
+    Cloud computing is heavily based on virtualization
+Brief History of Virtualization
+
+    On mainframe computers IBM has had virtualization features built into their hardware since the 1960s.
+
+    In micro and personal computers the first virtualization product I heard about was a card for the Apple II that allowed running some DOS applications.
+
+    Later Atari ST users could emulate Atari 8-bit computers.
+    PC emulation was possible with PC-Ditto.
+    Mac emulation was possible with Spectre.
+
+    Video game machine emulators are quite common... think MAME.
+
+    VMware released its first product in 1999.
+
+Types of Hypervisors
+
+    A term you will see tossed around frequently when referring to both Full virtualization and paravirtualization is hypervisor. The two distinct categories of hypervisors are:
+        Level 1 - bare metal
+        Level 2 - hosted
+    Many virtualization vendors offer a layered approach to their product line and may offer both type 1 and type 2 based products.
+
+Products
+
+----
+
+VMware [1999] (wikipedia)
+    Full virtualization
+        Type 2 - Windows, Mac, and Linux
+            VMware Player (no cost)
+            Server (no cost)
+            Workstation (cost)
+            Fusion (cost)
+        Type 1
+            ESX / Infrastructure (cost)
+            ESXi (no cost)
+SWsoft Virtuozzo [2001] (wikipedia) - Later Parallels
+    OS virtualization
+        Linux version 2001 (cost)
+        Windows version 2005 (cost)
+
+Linux-VServer [2001] (wikipedia)
+    OS virtualization
+        Linux only (free software)
+
+Xen / Citrix [2003] (wikipedia)
+    Paravirtualization
+        Linux (free software, no cost, and cost)
+        Windows (maybe)
+
+OpenVZ [2005] (wikipedia)
+    OS virtualization (upstream of Virtuozzo)
+        Linux only (free software)
+
+Parallels [2005] (wikipedia)
+    Full virtualization
+        Type 2 for Mac, Linux & Windows
+        May have a Type 1?!?
+    OS virtualization (see Virtuozzo)
+
+VirtualBox [2007] (wikipedia)
+    Full virtualization
+        Type 2 for Mac, Linux, Windows, and Solaris
+
+KVM [2007] (wikipedia)
+    Full virtualization
+        Type 1.5 / Hybrid? Requires virt support in CPU
+
+LXC [2008] (wikipedia)
+    OS virtualization
+        Linux only
+Docker [2013] (wikipedia)
+    Application containers
+        Linux and Microsoft Windows
+I will spend quite a bit of time elaborating on each product, its design and how they differ... verbally in class. More detail will be offered in additional lectures as we concentrate on specific products.
+
+Things not covered: UML, Wine, Win4Lin, QEMU, Bochs
+}}
+# KVM Intro {{
+KVM History
+
+    KVM (http://www.linux-kvm.org/page/Main_Page) stands for Kernel-based Virtual Machine and was added to the mainline Linux kernel starting with 2.6.20 (early 2007). KVM started as a development project lead by Avi Kivity and funded by technology startup Qumranet in Israel.
+
+    Qumranet created a commercial product based on KVM named SolidICE which specialized in end-user desktop machines. SolidICE included a patented remoting protocol named SPICE which is similar to the RDP, Citrix ICA, Pc-over-IP, etc.
+
+    In September 2008 Qumranet was acquired by Red Hat.
+
+How KVM Works
+
+    KVM requires CPU hardware support for virtualization in the CPU. It is implemented within the Linux kernel via three kernel modules... one for KVM proper (kvm) and two additional modules... one for each CPU type supported - Intel (kvm_intel) and AMD (kvm_amd). All KVM guests are "fully-virtualized".
+
+    The design behind KVM is to use the Linux kernel as the hypervisor... so you get all of the device drivers / hardware support and other functionality that is already part of the Linux kernel (scheduler, memory management, etc) "for free". By reusing code (the Linux kernel) KVM is actually very lean and less complicated when compared to other, stand-alone hypervisors who have to provide their own device driver and OS functions.
+
+KVM is a kernel module, what about the userland?
+
+Disk Storage
+
+    qcow2 is the native disk image format used by KVM.  It is typically thin-provisioned but can be fully pre-allocated if desired.
+
+    RAW disk format is also available and fully pre-allocated
+
+    It is possible to take an existing VM disk image from a few other virt platforms and convert them but often some internal changes may be needed (think drivers) post conversion.
+
+Emulation vs. virtio
+
+    KVM provides a good range of virtualized hardware (examples: e1000 and RTL8139 NICs) but they can be less efficient because the hypervisor has to emulate the devices (aka work harder)
+
+    virtio is a standard for device drivers where the device "knows" it is within virtualization.  virtio drivers provide much better performance than emulated devices.
+
+libvirt - Rosetta stone of virtualization?
+
+    libvirt (http://libvirt.org/) is a library that is released under the GNU Lesser General Public License and is primarily sponsored by Red Hat. The goal of the project is to produce a management library / abstraction layer / API for the plethora of virtualization on the market. libvirt abstracts access to Xen, QEMU, KVM, LXC (native Linux containers), OpenVZ, User Mode Linux and even commercial products such as VMware (type1 and type2), VirtualBox, and Microsoft's Hyper-V.
+
+virt-manager - GUI frontend for Xen or KVM VMs based on libvirt
+
+    virt-manager (http://virt-manager.org/) is a fairly comprehensive application that lets you create, configure, start, stop, destroy, and re-configure KVM virtual machines. It also offers performance monitoring and access to the graphical console of your VMs (via SPICE or VNC).  Available for Microsoft Windows too.
+
+    It can have one or more "connections" for managing local or remote VMs of type system or session (user).
+    See also: GNOME Boxes (for session VMs)
+        Demo virt-manager here.
+virsh -command line tool to manage Xen or KVM VMs based on libvirt
+
+    virsh list --all
+    virst start vmname
+    virsh shutdown vmname
+
+    virsh can also be used in an interactive mode where you can actually alter the configurations of your VMs.
+
+        Demo virsh here.
+virt-install - command line tool for creating virtual machines
+
+    virt-install --name centos74 --ram 2048 \
+    --disk path=/vm/demo1.img,size=10 --network=bridge:vmbr0 \
+    --vnc --os-type=linux --os-variant=rhel7 \
+    --cdrom /isos/centos7-x86_64.iso --accelerate
+
+    Although virt-install is a command line application, when doing an interactive OS install, you almost always need access to a graphical console. Luckily virt-install will automatically launch remote-viewer.
+virt-viewer (also remote-viewer)
+
+    virt-viewer is a minimal tool for displaying the graphical console of a virtual machine. The console is accessed using the VNC protocol.
+    The guest can be referred to based on its name, ID, or UUID.
+    spice://host.example.com:port
+    (starts at 5900)
+Other tools
+
+Some additional tools from the libguestfs-tools package and other packages include:
+    cockpit-machines - add-on for web-based Cockpit control-panel, to eventually replace virt-manager
+        qemu-img - Work with disk images
+        guestmount - Mount a guest on the host
+        virt-cat - Display a file in a virtual machine
+        virt-clone - Clone an existing VM to make a new one
+        virt-df - Display free space on virtual filesystems
+        virt-edit - Edit a file in a virtual machine
+        virt-inspector - Display information about a VM
+        virt-filesystems - List filesystems in a VM or disk image
+        virt-ls - List filesystems in a virtual machine or disk image
+        virt-rescue - Run a rescue shell on a virtual machine
+        virt-win-reg - Display Windows Registry entries from a VM
+        virt-resize - Easily resize a VM disk file
+        virt-p2v - Convert a physical machine into a VM
+        virt-v2v - Convert a physical machine into a VM
+}}
 }}
