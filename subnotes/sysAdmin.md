@@ -2612,4 +2612,68 @@ Why are system containers better than full blown VMs?
 
     Since containers use less resources, you can fit more of them on a physical host.  As an experiment, I created 1,000 containers on a physical server that had 32GB of RAM.  For details see my somewhat dated blog post on the subject.  It is hard to imagine running more than a few dozen VMs on a host with 32GB of RAM.  There are certain use cases where VMs are better suited... you can run different OSes (not just Linux), you can run different kernels, you can load modules and use kernel-specific features on a per VM basis.  Containers just don't offer that level of flexibility.  Pluses and minuses.
 }}
+# Virtualization: App Containers [Homework 8] {{
+System Containers were fairly easy to understand... they are very much like virtual machines but with some limitations... implemented as isolated and resource constrained groups of processes under a shared kernel.
+
+Application containers are a bit more vague.  One way to understand Application Containers is to examine the concept of Microservices.  A complex software solution may be made up of a number of individual software components that are configured to work together (aka integrated).  A web application is often a combination of HTML, client-side Javascript, server-side PHP (or other scripting language), database backend for application data as well as user authentication.
+
+Packaging and deploying a complex software solution as a monolitic stack that ran on a single server made a lot of sense (really, the only way to do it) when it was only used by small, medium and large-sized businesses with a customer base under a few tens of thousands.  Then the Internet happened and web-based businesses found themselves wanting to scale to much larger customer bases... often with unpredictable spikes.  A monolithic software stack just is not capable of scaling individual components as demand increases and bottlenecks appear and often break. Different components in a stack may scale differently.
+
+For large-scale applications the service oriented architecture (SOA) was developed with microservices being a key component.  Basically, if a database is a bottleneck, create a cluster of databases that grows and shrinks on-demand to meet the ever changing load.  Application containers are the technology that has enabled the SOA.  Each instance within a fleet of services is a microservice.
+
+Pets vs. Cattle (apologies to vegans)
+
+VMs and system containers are often seen as pets... individual and unique entities that you care about by providing continued care and maintenance.  Application containers are seen more as cattle... ie their numbers will grow and shrink.  Have too many, destroy what you don't need.  Have too few, create more.
+
+Docker
+
+One thing Docker brought to the table when it was introduced in 2013 was speed.
+
+As witnessed in class, creating a VM is faster than setting up a physical system... AND... creating a system container was much faster than creating a VM.  Creating an application container is much faster than creating a system container.
+
+Once a container image is built and available, a Docker application container can be created and started in a sub-second.  This is accomplished by using a shared, read-only base image and creating a scratch space to store changes that may or may not need to be retained and being able to combine the read-only and scratch space into a cohesive filesystem by using a union filesystem approach aka layering.  Since application containers often do not need persistent storage, the step of creating a new disk / filesystem of significant size for each application container has been eliminated.  Also an individual service (say a web server or a database server) is less processes to start up than a full system greatly improving startup time.
+
+Docker Marketing
+
+Docker came from a platform-as-a-service company (dotCloud) that used all proprietary software and with the popularization of application containers, morphed into the open source company Docker, Inc.  Another element that lead to Docker's mindshare success was the fact that they came up with a good way to explain it... a giant container ship on the ocean... with an application container being one of the storage containers.  Load them up, move them around, they are all the same.  Package your application/service into a container and it is now a standardized thing that can be easily and consistently replicated and deployed.  There is (almost) no difference when running a single container on a developers machine and running a fleet of them in a clustered datacenter
+
+Hands-on (Homework 8)
+Docker is a fairly complex thing and we aren't going to master it in a single, fairly short lecture... but we can install it and create a container and play with it... and understand some of the concepts.  For various reasons, Red Hat has been sponsoring the development of Docker compatible alternatives.  These include podman, buildah, skopeo, CRI-O... with their own enterprise class PaaS system named OpenShift.  Both Docker and Red Hat's alternative tools are available for CentOS.  We are going to use podman for the hands-on.  Want a coloring book on Red Hat's application container line-up?
+
+Goals:
+     1) Install podman
+     2) Use the sample podman Container file and build a custom image based on the base AlmaLinux 8 image
+     3) Create a container from the image we built
+     4) Get a basic understanding of the application container life-cycle
+
+Installing podman on AlmaLinux 8
+     dnf install podman --refresh
+
+Download the podman example from the course server (from your student VM)
+     scp $username@csci351.cs.montana.edu:/public/podman-example.tar.xz .
+     tar -xvJf podman-example.tar.xz ; cd podman-example
+
+Build a custom container image using the Container file
+     podman build -t a8systemd .
+     (when done you can verify the image is there)
+     podman images
+
+Create a container from the custom image
+     podman run -d --name c8 -p 16180:80 localhost/a8systemd
+     podman ps
+
+Test it out (change port to your port)
+     links http://localhost:16180
+
+Additional podman flags:
+    podman images (shows images)
+    podman start $name (starts a container)
+    podman stop $name (stops a container)
+    podman kill $name (kills a container)
+    podman rm $name (removes container)
+    podman rmi $imagename (deletes an image)
+    podman commit $name $newname (writes delta disk to new image)
+
+When done, copy /public/homework8.txt over to /root/HOMEWORK/ on your student VM.
+}}
 }}
