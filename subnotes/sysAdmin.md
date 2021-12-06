@@ -2676,4 +2676,40 @@ Additional podman flags:
 
 When done, copy /public/homework8.txt over to /root/HOMEWORK/ on your student VM.
 }}
+# Virtualization: Future of Virtualization, VDI? {{
+Hopefully what you have learned about virtualization for servers has lead you to wonder how virtualization could be leveraged for desktops.
+
+    Client-side Hypervisors
+
+What is a client-side hypervisor? It is basically the software you need to run virtual machines built into the computer via firmware (or a minimal system on local storage) so you can boot up a laptop or a desktop and pick from a list of local or even possibly remote VM images.
+
+One of the main problems with operating systems are those pesky drivers. Getting an older OS to work on newer hardware or a newer OS to work on ancient hardware can sometimes be challenging. The hardware layer abstraction that is offered by virtualization could really come in handy for desktops and laptops.
+
+Imagine storing a VM image in a central repository and then checking it out to run on whatever hardware you have no matter where you are. You would still be able to create and manage your own files / documents and then sync them back to the image repository when convenient.  Unfortunately the small number of client-side hypervisors products that have come out thus far have not been very successful in the marketplace.  Pain-points include noticeably degraded performance for multi-media and 3D applications.  The industry hasn't given up on client-side hypervisors and assume performance and adoption will improve in the not-too-distant future.
+
+     VDI *WITHOUT* Client-side Hypervisor
+
+ As a result, the dominant VDI solutions do not allow for offline use... and basically run everything in the datacenter.  VMs are accessed via remoting protocols.  There are pluses and minuses to that approach.  Want a GPU in your VM?  Doesn't matter that your local desktop or laptop has one, the server has to have one.  Originally there was a 1-to-1 ratio between GPU and GPU-user but that has gotten better with multi-GPU cards and drivers GPUs across multiple VMs.  The most successful product currently on the market is VMware Horizon... but it is very expensive.  Because of licensing costs, VDI does not save money over physical machines... but cost models can almost always be manipulated to say whatever you want.
+
+    VDI and DaaS (Desktop as a Service)
+
+Imagine being able to use a thin-client device, a desktop, laptop, or mobile device to stream one or more VMs over a local area network, WAN, or broadband connection regardless of where you are. A number of remote desktop protocols have been created / enhanced to provide as close to a "local machine" experience as possible. These include:
+
+    Citrix's ICA with the HDX extension
+    VMware's PCoverIP
+    Microsoft's RDP with RemoteFX (requires physical GPUs)
+    Red Hat's SPICE
+    nComputing's UXP
+    Virtual Bridge's VERDE
+    No Machine's NX (v3 Linux-only server, v4 for Linux, Win, Mac)
+    x2go (a fork of NX v3)
+    Wayland has RDP built-in (almost)
+
+Of course regular desktop computers can run remote desktop protocols as well as thin-client software. One such is VDI Blaster by Devon IT.
+It remains to be seen how well VDI will work out and if it is truly the future of the desktop computing platform.
+Will VDI and DaaS be cheaper than traditional desktops?  Brian Madden has written quite a bit about how cost models can be easily manipulated to make them say whatever you want. The consensus seems to be (regardless of what the product vendors claim) that currently, self-hosted VDI (over fast LANs) is more expensive mainly because server hardware is more costly than commodity desktop / laptop systems... along with the considerable licensing costs for commercial VDI solutions.   Large providers like Amazon may be able to provide budget pricing but how well will it work over existing network connections when a large number of desktops are are being streamed?
+Unfortunately the bulk of the OS code has been written assuming a local, physical machine with high performance components and LAN resources at higher speeds.  A lot of the performance issues and the requirements for bolt-on products to provide functions like persistent storage of user customization, data and documents, access to USB devices, printing, etc... may be solved if and when OS makers enhance their offerings with VDI / DaaS targeted features.
+Lastly there is also a vision of the future where a device the size of a smartphone can be used to completely replace desktop and laptop systems by docking the smaller devices to traditional screens, keyboard and mouse.  There is also the possibility of new input device technology that mimics the functionality of larger screens, keyboard and mouse but with a much smaller form factor.  We'll just have to wait and see how it all pans out.
+In 2014 a number of commercial DaaS sprang up.  VMware has an offering as does Amazon.
+}}
 }}
