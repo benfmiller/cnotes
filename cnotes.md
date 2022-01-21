@@ -125,6 +125,10 @@ sudo systemctl enable myscript.service
 Note
 	The order in which things are started is based on their dependencies — this particular script should start fairly late in the boot process, after a network is available (see the After section). You can configure different dependencies and orders based on your requirements.
 }}
+# MacStuff {{
+setup i3wm like with this link
+https://cbrgm.net/post/2021-05-5-setup-macos/
+}}
 
 https://unix.stackexchange.com/questions/255509/bluetooth-pairing-on-dual-boot-of-windows-linux-mint-ubuntu-stop-having-to-p
 // how to move bluetooth keys between dual boots
@@ -474,6 +478,8 @@ https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%
 
 //fix root only writes
 https://ubuntuforums.org/showthread.php?t=1409720
+
+git config --global core.excludesfile ~/.gitignore
 
 # Commands {{
 
