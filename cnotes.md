@@ -775,6 +775,23 @@ setup - Front-end menu program for other tools
 system-config-whatever
 TUI vs. GUI
 }}
+## Drive Health (smartctl) {{
+Use this to check health of linux drives.
+If there is a problem, it will send an email to the root account
+read the email with `sudo mail`. requires mail to be installed?
+
+sinstal smartmontools
+// requires smartmontools
+
+sudo smartctl -t short /dev/sda
+// does a short test on device /dev/sda
+
+sudo smartctl -H /dev/sda
+// gets status report
+
+smartctl
+smartctl -h
+}}
 }}
 }}
 
