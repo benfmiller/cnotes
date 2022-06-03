@@ -1,4 +1,78 @@
-#
+# AmazonLinux {{
+## install fzf {{
+```
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+```
+}}
+## install latest tmux {{
+https://gist.github.com/muralisc/dbb998a8555acc577ce2cf7aae8cd9fa
+```
+# Install tmux 3.0a on Centos
+
+# install deps
+sudo yum install -y gcc kernel-devel make ncurses-devel
+
+# DOWNLOAD SOURCES FOR LIBEVENT AND MAKE AND INSTALL
+curl -LOk https://github.com/libevent/libevent/releases/download/release-2.1.11-stable/libevent-2.1.11-stable.tar.gz
+tar -xf libevent-2.1.11-stable.tar.gz
+cd libevent-2.1.11-stable
+./configure --prefix=/usr/local
+make
+sudo make install
+
+# DOWNLOAD SOURCES FOR TMUX AND MAKE AND INSTALL
+
+curl -LOk https://github.com/tmux/tmux/releases/download/3.0a/tmux-3.0a.tar.gz
+tar -xf tmux-3.0a.tar.gz
+cd tmux-3.0a
+LDFLAGS="-L/usr/local/lib -Wl,-rpath=/usr/local/lib" ./configure --prefix=/usr/local
+make
+sudo make install
+
+# pkill tmux
+# close your terminal window (flushes cached tmux executable)
+# open new shell and check tmux version
+tmux -V
+```
+}}
+## install neovim {{
+https://gorm.dev/install-neovim-on-amazon-linux-2
+```
+sudo yum remove cmake -y
+
+sudo yum install gcc-c++ -y
+wget https://cmake.org/files/v3.10/cmake-3.10.0.tar.gz
+tar -xvzf cmake-3.10.0.tar.gz
+
+cd cmake-3.10.0
+# I be Bootstrappin'
+./bootstrap
+
+# make the thing
+make
+
+# make all the things
+sudo make install
+
+cd ..
+
+sudo pip-3.7 install neovim --upgrade
+cd "$(mktemp -d)"
+git clone https://github.com/neovim/neovim.git
+cd neovim
+
+make CMAKE_BUILD_TYPE=Release
+sudo make install
+```
+}}
+## install ripgrep {{
+ ```
+ sudo yum-config-manager --add-repo=https://copr.fedorainfracloud.org/coprs/carlwgeorge/ripgrep/repo/epel-7/carlwgeorge-ripgrep-epel-7.repo
+ sudo yum install ripgrep
+```
+}}
+}}
 Powershell {{
 While(1) {ps | sort -des cpu | select -f 15 | ft -a; sleep 1; cls}
 > // This shows cpu time, which is like cpu usage
