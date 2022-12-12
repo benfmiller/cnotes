@@ -73,17 +73,6 @@ sudo make install
 ```
 }}
 }}
-Powershell {{
-While(1) {ps | sort -des cpu | select -f 15 | ft -a; sleep 1; cls}
-> // This shows cpu time, which is like cpu usage
-}}
-# Git Bash {{
-
-.inputrc
-set bell-style none
-thank god removes bash screen blind
-
-}}
 # WSL {{
 
 ## powershell {{
@@ -130,17 +119,9 @@ vncserver
 //starts server
 
 }}
-# Jekyll {{
-sudo apt-get install ruby-full build-essential zlib1g-dev
-
-echo '# Install Ruby Gems to ~/gems' >> ~/.zshrc
-echo 'export GEM_HOME="$HOME/gems"' >> ~/.zshrc
-echo 'export PATH="$HOME/gems/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
-
-gem install jekyll bundler
-
-bundle exec jekyll serve
+# MacStuff {{
+setup i3wm like with this link
+https://cbrgm.net/post/2021-05-5-setup-macos/
 }}
 # Vagrant {{
 vagrant up
@@ -151,66 +132,7 @@ vagrant ssh
 
 //Look at vagrant file for example stuff!
 }}
-# Creating a Service {{
-Creating a Service
-
-On your Pi, create a .service file for your service, for example: myscript.service
-
-```
-[Unit]
-Description=My service
-After=network.target
-
-[Service]
-ExecStart=/usr/bin/python3 -u main.py
-WorkingDirectory=/home/pi/myscript
-StandardOutput=inherit
-StandardError=inherit
-Restart=always
-User=pi
-
-[Install]
-WantedBy=multi-user.target
-```
-
-    So in this instance, the service would run Python 3 from our working directory /home/pi/myscript which contains our python program to run main.py. But you are not limited to Python programs: simply change the ExecStart line to be the command to start any program or script that you want running from booting.
-
-    Copy this file into /etc/systemd/system as root, for example:
-
-sudo cp myscript.service /etc/systemd/system/myscript.service
-
-    Once this has been copied, you have to inform systemd that a new service has been added. This is done with the following command:
-
-sudo systemctl daemon-reload
-
-    Now you can attempt to start the service using the following command:
-
-sudo systemctl start myscript.service
-
-    Stop it using following command:
-
-sudo systemctl stop myscript.service
-
-    When you are happy that this starts and stops your app, you can have it start automatically on reboot by using this command:
-
-sudo systemctl enable myscript.service
-
-    The systemctl command can also be used to restart the service or disable it from boot up.
-Note
-	The order in which things are started is based on their dependencies — this particular script should start fairly late in the boot process, after a network is available (see the After section). You can configure different dependencies and orders based on your requirements.
-}}
-# MacStuff {{
-setup i3wm like with this link
-https://cbrgm.net/post/2021-05-5-setup-macos/
-}}
-
-https://unix.stackexchange.com/questions/255509/bluetooth-pairing-on-dual-boot-of-windows-linux-mint-ubuntu-stop-having-to-p
-// how to move bluetooth keys between dual boots
-
-/usr/bin/setxkbmap -option "ctrl:nocaps"
-//include in .profile to map ctrl to caps
-
-i3 {{
+# i3 {{
 sudo add-apt-repository -y ppa:regolith-linux/stable
 sinstal i3-gaps
 
@@ -546,6 +468,82 @@ focus_on_window_activation focus
 
 }}
 
+# Jekyll {{
+sudo apt-get install ruby-full build-essential zlib1g-dev
+
+echo '# Install Ruby Gems to ~/gems' >> ~/.zshrc
+echo 'export GEM_HOME="$HOME/gems"' >> ~/.zshrc
+echo 'export PATH="$HOME/gems/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+
+gem install jekyll bundler
+
+bundle exec jekyll serve
+}}
+# Creating a Service {{
+Creating a Service
+
+On your Pi, create a .service file for your service, for example: myscript.service
+
+```
+[Unit]
+Description=My service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 -u main.py
+WorkingDirectory=/home/pi/myscript
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+```
+
+    So in this instance, the service would run Python 3 from our working directory /home/pi/myscript which contains our python program to run main.py. But you are not limited to Python programs: simply change the ExecStart line to be the command to start any program or script that you want running from booting.
+
+    Copy this file into /etc/systemd/system as root, for example:
+
+sudo cp myscript.service /etc/systemd/system/myscript.service
+
+    Once this has been copied, you have to inform systemd that a new service has been added. This is done with the following command:
+
+sudo systemctl daemon-reload
+
+    Now you can attempt to start the service using the following command:
+
+sudo systemctl start myscript.service
+
+    Stop it using following command:
+
+sudo systemctl stop myscript.service
+
+    When you are happy that this starts and stops your app, you can have it start automatically on reboot by using this command:
+
+sudo systemctl enable myscript.service
+
+    The systemctl command can also be used to restart the service or disable it from boot up.
+Note
+	The order in which things are started is based on their dependencies — this particular script should start fairly late in the boot process, after a network is available (see the After section). You can configure different dependencies and orders based on your requirements.
+}}
+# MongoDB Commands {{
+// mongodump with docker
+docker exec <CONTAINER> sh -c 'exec mongodump --db somedb --gzip --archive' > dump_`date "+%Y-%m-%d"`.gz
+
+// mongodump Tradesuite
+mongodump --db TradeSuite
+}}
+
+# Misc {{
+https://unix.stackexchange.com/questions/255509/bluetooth-pairing-on-dual-boot-of-windows-linux-mint-ubuntu-stop-having-to-p
+// how to move bluetooth keys between dual boots
+
+/usr/bin/setxkbmap -option "ctrl:nocaps"
+//include in .profile to map ctrl to caps
+
+
 // instructions to mount cifs drive
 https://markontech.com/linux/mount-a-network-shared-drive-on-linux/
 https://help.ubuntu.com/community/How%20to%20Create%20a%20Network%20Share%20Via%20Samba%20Via%20CLI%20(Command-line%20interface/Linux%20Terminal)%20-%20Uncomplicated,%20Simple%20and%20Brief%20Way!
@@ -555,7 +553,85 @@ https://ubuntuforums.org/showthread.php?t=1409720
 
 git config --global core.excludesfile ~/.gitignore
 
+}}
+# Neat Projects {{
+
+flutter_rust_bridge
+- Compile rust and use directly from flutter
+
+}}
+# articles and links {{
+
+language server nvim info, nvim-lspconfig
+- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+
+AI geneartor art, memes, variety
+- https://thisxdoesnotexist.com/
+
+local blockchain with nice GUI and tooling
+- https://trufflesuite.com/ganache/
+
+go development with go
+- https://goethereumbook.org/en/
+
+Google open source mini conferences, some cool informational vids for tech on-demand
+- https://opensourcelive.withgoogle.com/
+}}
+# Blockchain-Solidity {{
+Centrifuge - the infrastructure that facilitates the decentralized financing of real-world assets natively on-chain, creating a fully transparent market which allows borrowers and lenders to transact without unnecessary intermediaries
+    - https://docs.centrifuge.io/getting-started/centrifuge-at-a-glance/
+
+Tinlake - open DeFi protocol and marketplace for real-world asset pools
+    - centrifuge's flagship dApp
+    - https://tinlake.centrifuge.io/
+
+WalletConnect
+    - communications protocol for web3, enabling wallets and apps to securely connect and interact
+    - https://walletconnect.com/
+
+Avalanche
+    - smart contracts platform
+    - blazingly fast
+    - Uses hashgraph DAG for consensus
+
+    - https://www.avax.network/
+
+Brightvine "Protocol" product
+- https://docs.google.com/document/d/1djxXdl3OV1xreVwVkJPgza9cJQ8UNWGgzr6WAq7RWYA/edit
+
+Learn solidity and DApps turorials
+- https://cryptozombies.io/
+
+Deploy Solidity Contract using GoLang — Go-Simple-Storage-FCC
+- https://medium.com/coinmonks/deploy-solidity-contract-using-golang-go-simple-storage-fcc-b247b29ffa18
+
+openzeppelin, provides security products to build, automate, and operate decentralized applications.
+- https://www.openzeppelin.com/
+- https://docs.openzeppelin.com/contracts/4.x/
+    - Docs
+}}
+
 # Commands {{
+
+## Powershell {{
+While(1) {ps | sort -des cpu | select -f 15 | ft -a; sleep 1; cls}
+> // This shows cpu time, which is like cpu usage
+}}
+## Git Bash {{
+
+.inputrc
+set bell-style none
+thank god removes bash screen blind
+
+}}
+## One liners {{
+
+“Given a text file and an integer k, print the kmost common words in the file (and the number of their occurrences) in decreasing frequency.”
+```
+tr -cs A-Za-z '' | tr A-Z a-z | sort | uniq -c | sort -rn | sed ${1}q
+```
+}}
+
 
 mimeopen {filename}
 //opens file with prefered program, -a asks which program, -d asks and sets default

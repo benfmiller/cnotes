@@ -1,4 +1,3 @@
-# up to quiz 1 {{
 ## Introduction {{
 All lectures for this class will be available in the webm and or mp4 formats which should play fine with the Firefox and Google Chrome web browsers.  Feel free to right-click on any video link and download it to play with your preferred video player.  VLC is recommended.
 
@@ -693,8 +692,6 @@ System Admin related commands
         system-config-whatever
         TUI vs. GUI
 }}
-}}
-# Onward {{
 ## Understanding file/dir ownership and permissions {{
 References:
 UaLSAH REFERENCE - Chapter 6, The File System
