@@ -535,6 +535,88 @@ docker exec <CONTAINER> sh -c 'exec mongodump --db somedb --gzip --archive' > du
 // mongodump Tradesuite
 mongodump --db TradeSuite
 }}
+# Vimspector {{
+my custom default snippets are defined in ~/rcfiles/UltiSnips/json.snippets
+type "vimspector-default" to get default
+
+all around ref, by the maintainer
+- https://puremourning.github.io/vimspector/configuration.html
+
+The project and readme
+- https://github.com/puremourning/vimspector
+
+build in supported languages, install with :VimspectorInstall <something>
+- https://github.com/puremourning/vimspector#supported-languages
+
+## my nvim mappings - vimspector {{
+
+nnoremap <leader>qd :VimspectorReset<CR>
+nnoremap <leader>dd :call vimspector#Continue()<CR>
+nnoremap <leader>dc :call GotoWindow(g:vimspector_session_windows.code)<CR>
+nnoremap <leader>dt :call GotoWindow(g:vimspector_session_windows.tagpage)<CR>
+nnoremap <leader>dv :call GotoWindow(g:vimspector_session_windows.variables)<CR>
+nnoremap <leader>dw :call GotoWindow(g:vimspector_session_windows.watches)<CR>
+nnoremap <leader>ds :call GotoWindow(g:vimspector_session_windows.stack_trace)<CR>
+nnoremap <leader>do :call GotoWindow(g:vimspector_session_windows.output)<CR>
+
+nmap <leader>dl <Plug>VimspectorStepInto
+nmap <leader>dj <Plug>VimspectorStepOver
+nmap <leader>dk <Plug>VimspectorStepOut
+nmap <leader>dR <Plug>VimspectorRestart
+nmap <leader>daw <Plug>VimspectorAddWatch
+nmap <leader>dew <Plug>VimspectorDeleteWatch
+
+" alt maps
+nmap <M-q> :VimspectorReset<CR>
+nmap <M-d> :call vimspector#Continue()<CR>
+nmap <M-l> <Plug>VimspectorStepInto
+nmap <M-j> <Plug>VimspectorStepOver
+nmap <M-k> <Plug>VimspectorStepOut
+nmap <M-h> <Plug>VimspectorRestart
+nmap <M-c> <Plug>VimspectorRunToCursor
+
+nmap <leader>drc <Plug>VimspectorRunToCursor
+nmap <C-b> <Plug>VimspectorToggleBreakpoint
+nmap <leader>db <Plug>VimspectorToggleConditionalBreakpoint
+
+}}
+## helpful help documents - vimspector {{
+vimspector-ref-replacements-variables
+    - shows how to do input args to debuggable program
+
+vimspector-ref-predefined-variables
+    - predefined variables to use in vimspector files
+
+vimspector-ref-python-example
+    - example for python, remote debugging with docker
+
+vimspector-ref-docker-example
+    - docker example
+}}
+## Trying to get go docker working {{
+
+go-docker-delve-remote-debug
+- https://golangforall.com/en/post/go-docker-delve-remote-debug.html
+
+- https://www.reddit.com/r/neovim/comments/yq78i0/neovim_debug_app_inside_docker_container/
+
+vim-go plugin,
+- https://github.com/fatih/vim-go/wiki/Tutorial
+- https://www.pavedroad.io/part-8-go-debugging-with-vim-and-delve/
+
+vim-go plugin connect to delve session with port
+- https://osamaelnaggar.com/blog/vim_go_and_remote_debugging/
+- https://github.com/puremourning/vimspector/discussions/342
+
+}}
+
+There are two locations for debug configurations for a project:
+
+- 'g:vimspector_configurations' vim variable (dict)
+- '<vimspector home>/configurations/<OS>/<filetype>/*.json'
+- '.vimspector.json' in the project source
+
+}}
 
 # Misc {{
 https://unix.stackexchange.com/questions/255509/bluetooth-pairing-on-dual-boot-of-windows-linux-mint-ubuntu-stop-having-to-p
@@ -553,6 +635,7 @@ https://ubuntuforums.org/showthread.php?t=1409720
 
 git config --global core.excludesfile ~/.gitignore
 
+
 }}
 # Neat Projects {{
 
@@ -564,6 +647,9 @@ flutter_rust_bridge
 
 language server nvim info, nvim-lspconfig
 - https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+
+Mason nvim "package manager" server mapping from mason-lspconfig to nvim-lspconfig
+- https://github.com/williamboman/mason-lspconfig.nvim/blob/main/doc/server-mapping.md
 
 AI geneartor art, memes, variety
 - https://thisxdoesnotexist.com/
@@ -609,6 +695,11 @@ openzeppelin, provides security products to build, automate, and operate decentr
 - https://www.openzeppelin.com/
 - https://docs.openzeppelin.com/contracts/4.x/
     - Docs
+- https://www.openzeppelin.com/contracts
+    - contract builder
+
+Ethereum Improvement Proposals, multi toekn standard, semi fungible
+- https://eips.ethereum.org/EIPS/eip-1155
 }}
 
 # Commands {{
@@ -630,6 +721,10 @@ thank god removes bash screen blind
 ```
 tr -cs A-Za-z '' | tr A-Z a-z | sort | uniq -c | sort -rn | sed ${1}q
 ```
+
+
+// download/clone all git submodules
+git submodule update --init --recursive
 }}
 
 
