@@ -39,6 +39,7 @@ tmux -V
 ## install neovim {{
 https://gorm.dev/install-neovim-on-amazon-linux-2
 ```
+sudo yum install libcurl-devel
 sudo yum remove cmake -y
 
 sudo yum install gcc-c++ -y
@@ -47,7 +48,7 @@ tar -xvzf cmake-3.10.0.tar.gz
 
 cd cmake-3.10.0
 # I be Bootstrappin'
-./bootstrap
+./bootstrap --system-curl
 
 # make the thing
 make
@@ -635,6 +636,8 @@ https://ubuntuforums.org/showthread.php?t=1409720
 
 git config --global core.excludesfile ~/.gitignore
 
+show latest output from vim to cmdline
+:messages
 
 }}
 # Neat Projects {{
