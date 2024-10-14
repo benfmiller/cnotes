@@ -134,8 +134,23 @@ vagrant ssh
 //Look at vagrant file for example stuff!
 }}
 # i3 {{
-sudo add-apt-repository -y ppa:regolith-linux/stable
-sinstal i3-gaps
+<!-- sudo add-apt-repository -y ppa:regolith-linux/stable -->
+<!-- sinstal i3-gaps -->
+
+// i3wm install
+https://i3wm.org/docs/repositories.html
+
+// make logout runnable as root
+https://serverfault.com/questions/75620/ubuntu-let-a-user-run-a-script-with-root-permissions
+
+// i3wm docs
+https://i3wm.org/docs/userguide.html#gaps
+
+// look in rcfiles/config and ln everything you want
+
+// rofi theme
+https://draculatheme.com/rofi
+// actually use `rofi-theme-selectork`
 
 sinstal i3status
 sinstal i3blocks
@@ -144,11 +159,11 @@ sinstal flameshot
 sinstal compton
 
 // for lock on screen close
-sinstal xss-lock
+sinstal xss-lock -y
 
-sudo apt-get install lxappearance gtk-chtheme
+sudo apt-get install lxappearance gtk-chtheme -y
 
-apt install feh fonts-font-awesome rofi pulseaudio-utils xbacklight alsa-tools clipit gcc git terminator locate pcmanfm libnotify-bin acpi
+apt install feh fonts-font-awesome rofi pulseaudio-utils xbacklight alsa-tools clipit gcc git terminator locate pcmanfm libnotify-bin acpi -y
 
 // look at rcfiles/config/X11 to find the intel_backlight thing for xbacklight
 
@@ -467,6 +482,20 @@ no_focus [window_role="pop-up"]
 focus_on_window_activation focus
 }}
 
+## var-window i3 stuff {{
+
+probably want to install blueman (apt)
+
+cursor sometimes flickered with compton on second screen
+https://unix.stackexchange.com/questions/358992/cursor-flickers-with-xrandr-scaling
+https://github.com/chjj/compton/issues/297
+
+autorandr and arandr
+autorandr lets you save screen configurations based on what is detected
+    - https://github.com/phillipberndt/autorandr
+ARandR lets you configure screens with a GUI, very helpful compared to just using xrandr
+
+}}
 }}
 
 # Jekyll {{
@@ -1186,6 +1215,8 @@ perl -e 'print `bash`'
 // back ticks are system commands. single quote treats expression as a whole. " evaluates backticks first
 }}
 ## Python {{
+executing bash from python {{
+```
 from subprocess import call
 call(['bash'])
 
@@ -1198,6 +1229,22 @@ str(os.system('bash')) # for code execution will sometimes only return the retur
 
 str(__import__('os').popen(str(__import__('base64').b64decode('{command}'))).read())
 // to base64 encode
+```
+}}
+
+// Use pipreqs to scan imports and create requirements.txt file with only top level dependencies
+// not perfect, but goes a long way
+pip install pipreqs
+pipreqs ./
+
+// pdm is helpful for converting setup.py to pyproject.toml
+```bash
+pip install pdm
+pdm add setuptools
+pdm init # sets up venv and license and stuff
+pdm import setup.py # regenerates file from setup.py
+```
+
 }}
 ## Ruby {{
 ruby -e 'require "irb" ; IRB.start(__FILE__)'
