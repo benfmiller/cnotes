@@ -1208,6 +1208,1830 @@ sqlite3 {filename}
 
 
 }}
+
+## Useful sql queries {{
+
+// Connection string for connecting from bastion to private instance, replace ip address for correct instance
+Invoke-Sqlcmd -ConnectionString "Data Source=10.0.26.216,8200; User Id=admin; Password=obfuscatedPassword; TrustServerCertificate=true" -Querytimeout 10000 -Query "
+
+### create huge bench database {{
+from https://w.amazon.com/bin/view/RDS/SqlServer/Operations/usefulSQL/#Hquicklycreatealargesetofrelationaltableswithdata
+```
+create database bench
+go
+USE [bench]
+GO
+CREATE TABLE [dbo].[customers](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customer_orders](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customers_address](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+create index fk_addr_customer_id on customers_address(customer_id);
+GO
+create index fk_order_customer_id on customer_orders(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go
+```
+}}
+### create huge bench database from powershell with default password and username {{
+from https://w.amazon.com/bin/view/RDS/SqlServer/Operations/usefulSQL/#Hquicklycreatealargesetofrelationaltableswithdata
+```
+sqlcmd -W -t 10000 -Q "
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+create database tempfile1
+go
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customer_orders](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customers_address](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+create index fk_addr_customer_id on customers_address(customer_id);
+GO
+create index fk_order_customer_id on customer_orders(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+
+
+```
+
+
+tables 2 {{
+
+query 2, same db but different tables
+```
+sqlcmd -W -t 10000 -Q "
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers2](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customer_orders2](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customers_address2](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+create index fk_addr_customer_id on customers_address2(customer_id);
+GO
+create index fk_order_customer_id on customer_orders2(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers2]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders2]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 3 {{
+
+query 3, same db but different tables
+```
+sqlcmd -W -t 10000 -Q "
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers3](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customer_orders3](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customers_address3](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+create index fk_addr_customer_id on customers_address3(customer_id);
+GO
+create index fk_order_customer_id on customer_orders3(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers3]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders3]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 4 {{
+
+query 4, same db but different tables
+```
+sqlcmd -W -t 10000 -Q "
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers4](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customer_orders4](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customers_address4](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+create index fk_addr_customer_id on customers_address4(customer_id);
+GO
+create index fk_order_customer_id on customer_orders4(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers4]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders4]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 5 {{
+
+query 5, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers5](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customer_orders5](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customers_address5](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+create index fk_addr_customer_id on customers_address5(customer_id);
+GO
+create index fk_order_customer_id on customer_orders5(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers5]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders5]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 6 {{
+
+query 6, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers6](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customer_orders6](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customers_address6](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+create index fk_addr_customer_id on customers_address6(customer_id);
+GO
+create index fk_order_customer_id on customer_orders6(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers6]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders6]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+filegroup {{
+
+
+### Creating filegroup, and deleting file {{
+
+
+create file group
+```
+sqlcmd -W -Q "
+CREATE DATABASE tempfile1;
+USE master
+GO
+ALTER DATABASE tempfile1
+ADD FILEGROUP Test1FG1;
+GO
+ALTER DATABASE tempfile1 
+ADD FILE 
+(
+    NAME = test1dat1,
+    FILENAME = 'D:\rdsdbdata\DATA\tempdbfile1.mdf',
+    SIZE = 5MB,
+    MAXSIZE = 1000GB,
+    FILEGROWTH = 500MB
+),
+(
+    NAME = test1dat2,
+    FILENAME = 'D:\rdsdbdata\DATA\tempdbfile2.mdf',
+    SIZE = 5MB,
+    MAXSIZE = 1000GB,
+    FILEGROWTH = 500MB
+)
+TO FILEGROUP Test1FG1;
+GO"
+```
+
+Then write data to db using below commands
+shrink data file
+```
+USE tempfile1;
+GO
+DBCC SHRINKFILE (test1dat2, EMPTYFILE);
+GO
+```
+
+Then delete file
+```
+ALTER DATABASE tempfile1
+REMOVE FILE test1dat4;
+```
+
+
+query for file data
+```
+SELECT  DB_NAME(m.database_id) as databaseName, m.*, d.state_desc as status
+FROM sys.master_files m, sys.databases d
+WHERE m.database_id = d.database_id;
+```
+
+
+}}
+
+}}
+
+tables 7 {{
+
+query 7, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers7](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customer_orders7](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customers_address7](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+create index fk_addr_customer_id on customers_address7(customer_id);
+GO
+create index fk_order_customer_id on customer_orders7(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers7]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders7]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 8 {{
+
+query 8, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers8](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customer_orders8](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customers_address8](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+create index fk_addr_customer_id on customers_address8(customer_id);
+GO
+create index fk_order_customer_id on customer_orders8(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers8]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders8]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 9 {{
+
+query 9, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers9](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customer_orders9](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customers_address9](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+create index fk_addr_customer_id on customers_address9(customer_id);
+GO
+create index fk_order_customer_id on customer_orders9(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers9]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders9]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 10 {{
+
+query 10, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers10](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customer_orders10](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customers_address10](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+create index fk_addr_customer_id on customers_address10(customer_id);
+GO
+create index fk_order_customer_id on customer_orders10(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers10]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders10]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 11 {{
+
+query 11, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers11](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customer_orders11](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customers_address11](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+create index fk_addr_customer_id on customers_address11(customer_id);
+GO
+create index fk_order_customer_id on customer_orders11(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers11]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders11]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 12 {{
+
+query 12, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers12](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customer_orders12](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customers_address12](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+create index fk_addr_customer_id on customers_address12(customer_id);
+GO
+create index fk_order_customer_id on customer_orders12(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers12]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders12]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 13 {{
+
+query 13, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+Invoke-Sqlcmd -Querytimeout 10000 -Query "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers13](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customer_orders13](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customers_address13](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+create index fk_addr_customer_id on customers_address13(customer_id);
+GO
+create index fk_order_customer_id on customer_orders13(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers13]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders13]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 14 {{
+
+query 14, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+Invoke-Sqlcmd -Querytimeout 10000 -Query "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers14](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customer_orders14](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customers_address14](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+create index fk_addr_customer_id on customers_address14(customer_id);
+GO
+create index fk_order_customer_id on customer_orders14(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers14]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders14]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 15 {{
+
+query 15, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+Invoke-Sqlcmd -Querytimeout 10000 -Query "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers15](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customer_orders15](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customers_address15](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+create index fk_addr_customer_id on customers_address15(customer_id);
+GO
+create index fk_order_customer_id on customer_orders15(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers15]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders15]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 16 {{
+
+query 16, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+Invoke-Sqlcmd -Querytimeout 10000 -Query "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers16](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customer_orders16](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customers_address16](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+create index fk_addr_customer_id on customers_address16(customer_id);
+GO
+create index fk_order_customer_id on customer_orders16(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers16]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders16]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 17 {{
+
+query 17, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+Invoke-Sqlcmd -Querytimeout 10000 -Query "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers17](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customer_orders17](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customers_address17](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+create index fk_addr_customer_id on customers_address17(customer_id);
+GO
+create index fk_order_customer_id on customer_orders17(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers17]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders17]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 18 {{
+
+query 18, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+Invoke-Sqlcmd -Querytimeout 10000 -Query "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers18](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customer_orders18](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customers_address18](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+create index fk_addr_customer_id on customers_address18(customer_id);
+GO
+create index fk_order_customer_id on customer_orders18(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers18]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders18]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+tables 19 {{
+
+query 19, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+sqlcmd -W -t 10000 -Q "
+Invoke-Sqlcmd -Querytimeout 10000 -Query "
+USE [tempfile1]
+GO
+CREATE TABLE [dbo].[customers19](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customer_orders19](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+CREATE TABLE [dbo].[customers_address19](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [Test1FG1]) ON [Test1FG1]
+GO
+create index fk_addr_customer_id on customers_address19(customer_id);
+GO
+create index fk_order_customer_id on customer_orders19(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers19]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders19]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+}}
+
+tables 4, msdb {{
+
+query 4, same db but different tables
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+USE [msdb]
+GO
+CREATE TABLE [dbo].[customers4](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customer_orders4](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customers_address4](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+create index fk_addr_customer_id on customers_address4(customer_id);
+GO
+create index fk_order_customer_id on customer_orders4(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers4]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders4]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+```
+
+}}
+
+
+Always On query {{
+
+
+```
+ALTER DATABASE [db] SET HADR OFF;
+```
+
+
+}}
+
+### create huge bench database from powershell remote server {{
+from https://w.amazon.com/bin/view/RDS/SqlServer/Operations/usefulSQL/#Hquicklycreatealargesetofrelationaltableswithdata
+
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=password" -ServerInstance "sqlserver-millrben-1.cbyx5cm4ck7c.us-west-2.rds.amazonaws.com,1433" -Querytimeout 10000 -Query "
+create database bench2
+go
+USE [bench2]
+GO
+CREATE TABLE [dbo].[customers](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customer_orders](
+        [customer_id] [int] NULL,
+        [order_id] [int] IDENTITY(1,1) NOT NULL,
+        [item_name] [varchar](100) NULL,
+        [item_id] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+        [alt_customer_id] [varchar](20) NULL,
+        [order_date] [date] NULL,
+        [ship_date] [date] NULL,
+        [status] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED ([order_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[customers_address](
+        [customer_id] [int] NULL,
+        [address_id] [int] IDENTITY(1,1) NOT NULL,
+        [street1] [varchar](100) NULL,
+        [street2] [varchar](100) NULL,
+        [city] [varchar](100) NULL,
+        [state] [varchar](2) NULL,
+        [zip] [varchar](10) NULL,
+PRIMARY KEY CLUSTERED ([address_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+create index fk_addr_customer_id on customers_address(customer_id);
+GO
+create index fk_order_customer_id on customer_orders(customer_id);
+GO
+
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+while @counter < 1000000
+begin
+                set @counter = @counter + 1
+        INSERT INTO [dbo].[customers]([fname],[lname],[description]) VALUES('Rds', 'RandyMachoManSavage','inserting fake customer rows for mysql stab testing')
+        set @customer = @@identity
+                select @customer
+        INSERT INTO [dbo].[customer_orders]([customer_id],[item_name],[item_id],[description],[alt_customer_id],[order_date],[ship_date],[status])
+        select top 1000 @customer,'RDS database' as item_name,'RDS-1234567889' as item_id,'inserting fake customer rows for mysql stab testing' as description,'123456789' as alt_customer_id,getdate() as order_date,null as ship_date,'N' as status from sys.all_objects
+end
+go"
+
+
+```
+}}
+### delete from huge bench database {{
+```
+USE [bench]
+GO
+-- this will create co table of 137g with 1,000,000 iterations
+declare @customer int
+declare @counter int
+set @customer = 0 
+set @counter = 0 
+begin
+        SELECT COUNT(customer_id) from [dbo].[customers]
+		DELETE FROM [dbo].[customers] WHERE customer_id > 650000
+        SELECT COUNT(customer_id) from [dbo].[customers]
+
+		SELECT COUNT(order_id) from [dbo].[customer_orders]
+		DELETE FROM [dbo].[customer_orders] WHERE customer_id > 650000
+        SELECT COUNT(order_id) from [dbo].[customer_orders]
+end
+go
+```
+}}
+## many dbs {{
+### Create many databases {{
+
+// https://www.techbrothersit.com/2015/06/how-to-create-100s-of-sample-databases.html
+// nifty blog
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+--Create Variables
+Declare @DataFilePath VARCHAR(100)
+Declare @LogFilePath VARCHAR(100)
+Declare @SubPartDBName VARCHAR(100)
+Declare @StartCnt int
+Declare @MaxDBCnt int
+
+--Set the Variable Values, @MaxDBCnt is Number of Databases you want to Create
+SET @StartCnt=1
+SET @MaxDBCnt=301
+
+--Provide the Data File Path And Log File Path
+SET @DataFilePath='D:\rdsdbdata\DATA\'
+SET @LogFilePath='D:\rdsdbdata\Log\'
+--Chose the First part of your DB name, Let's say TEST is chosen then Database will be created Test1,Test2....Test100
+SET @SubPartDBName='Test'
+
+
+--Create Databases
+While ( @startCnt<@MaxDBCnt)
+BEGIN
+
+Print CAst(@startCnt AS VARCHAR(100))
+DECLARE @DBFullName VARCHAR(500) =@SubPartDBName+CAST(@StartCnt AS VARCHAR(10))
+DECLARE @SQL NVARCHAR(MAX)
+SET @SQL= 'CREATE DATABASE ['+@DBFullName+']
+
+ ON 
+( NAME = N'''+@DBFullName+''', FILENAME = N'''+@DataFilePath+@DBFullName+'.mdf'' ,
+ SIZE = 4096KB , FILEGROWTH = 1024KB )
+ LOG ON 
+( NAME = N'''+@DBFullName+'_log'', FILENAME = N'''+@LogFilePath+@DBFullName+'_log.ldf'' ,
+ SIZE = 1024KB , FILEGROWTH = 10%)'
+SET @startCnt=@startCnt+1
+Print @SQL
+Execute (@SQL)
+END"
+```
+}}
+### create table on many databases {{
+
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+--Create Variables
+Declare @DataFilePath VARCHAR(100)
+Declare @LogFilePath VARCHAR(100)
+Declare @SubPartDBName VARCHAR(100)
+Declare @TableName VARCHAR(100)
+Declare @StartCnt int
+Declare @MaxDBCnt int
+
+--Set the Variable Values, @MaxDBCnt is Number of Databases you want to Create
+SET @StartCnt=1
+SET @MaxDBCnt=2
+
+--Chose the First part of your DB name, Let's say TEST is chosen then Database will be created Test1,Test2....Test100
+SET @SubPartDBName='Test'
+SET @TableName='TestTable'
+
+
+-- Databases
+While ( @startCnt<@MaxDBCnt)
+BEGIN
+
+Print CAST(@startCnt AS VARCHAR(100))
+DECLARE @DBFullName VARCHAR(500) =@SubPartDBName+CAST(@startCnt AS VARCHAR(10))
+DECLARE @SQL NVARCHAR(MAX)
+SET @SQL= 'USE ['+@DBFullName+'];
+
+CREATE TABLE ['+@TableName+'] (TestColInt int,TestColFloat FLOAT(8));
+
+INSERT INTO ['+@TableName+'] (TestColInt,TestColFloat) VALUES (1,1.96);'
+
+SET @startCnt=@startCnt+1
+Print @SQL
+Execute (@SQL)
+END"
+```
+}}
+### Delete many databases {{
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 10000 -Query "
+--Create Variables
+Declare @DataFilePath VARCHAR(100)
+Declare @LogFilePath VARCHAR(100)
+Declare @SubPartDBName VARCHAR(100)
+Declare @StartCnt int
+Declare @MaxDBCnt int
+
+--Set the Variable Values, @MaxDBCnt is Number of Databases you want to Create
+SET @StartCnt=500
+SET @MaxDBCnt=5001
+
+--Provide the Data File Path And Log File Path
+SET @DataFilePath='D:\rdsdbdata\DATA\'
+SET @LogFilePath='D:\rdsdbdata\Log\'
+--Chose the First part of your DB name, Let's say TEST is chosen then Database will be created Test1,Test2....Test100
+SET @SubPartDBName='Test'
+
+
+--Create Databases
+While ( @startCnt<@MaxDBCnt)
+BEGIN
+
+Print CAst(@startCnt AS VARCHAR(100))
+DECLARE @DBFullName VARCHAR(500) =@SubPartDBName+CAST(@StartCnt AS VARCHAR(10))
+DECLARE @SQL NVARCHAR(MAX)
+SET @SQL= 'DROP DATABASE ['+@DBFullName+']'
+SET @startCnt=@startCnt+1
+Print @SQL
+Execute (@SQL)
+END"
+```
+}}
+}}
+
+## Continuously write data {{
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+create database bench
+go
+USE [bench]
+GO
+
+SET NOCOUNT ON
+DECLARE @i INT = 1
+WHILE (@i <= 1000)
+ BEGIN
+  WAITFOR DELAY '00:00:01'
+ DECLARE @sql AS NVARCHAR(500)
+ SET @sql = 'select top 1000 o.* into [' + CONVERT(NVARCHAR(50), NEWID()) +'] from master.sys.objects o, master.sys.objects a, master.sys.objects b, master.sys.objects c' 
+ EXECUTE sp_executesql @sql
+ SET  @i = @i + 1;
+END
+"
+```
+
+}}
+### Get db info {{
+
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+SELECT name, state_desc FROM sys.databases;
+go"
+
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Query "
+SELECT
+    db.name AS DatabaseName,
+    db.create_date AS CreateDate,
+    db.state_desc AS DatabaseState,
+    db.database_id AS DatabaseId,
+    rs.database_guid AS DatabaseGuid,
+    rs.last_log_backup_lsn AS LastLogBackupLSN,
+    rs.recovery_fork_guid RecoveryForkGuid,
+    rs.first_recovery_fork_guid AS FirstRecoveryForkGuid,
+    db.recovery_model_desc AS RecoveryModel,
+    db.is_auto_close_on AS IsAutoClose,
+    CASE WHEN db.source_database_id IS NULL THEN 0 ELSE 1 END  AS IsDatabaseSnapshot
+FROM sys.databases db
+    INNER JOIN sys.database_recovery_status rs
+    ON db.database_id = rs.database_id
+WHERE DB_NAME(db.database_id) NOT IN ('tempdb');
+"
+```
+
+Invoke-Sqlcmd -ConnectionString "User Id=rdstest; Password=obfuscatedPassword" -Query "
+SELECT d.name as Name FROM sys.databases d WITH (NOLOCK);
+"
+```
+}}
+### Create some tables {{
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+-- CREATE DATABASE Test1;
+-- GO
+USE Test1;
+-- CREATE TABLE table1 ( CUSTOMER_ID VARCHAR(20) NOT NULL , ACCOUNT_ID VARCHAR(20) NOT NULL );
+-- CREATE TABLE table2 ( CUSTOMER_ID VARCHAR(20) NOT NULL , ACCOUNT_ID VARCHAR(20) NOT NULL );
+CREATE TABLE table3 ( CUSTOMER_ID VARCHAR(20) NOT NULL , ACCOUNT_ID VARCHAR(20) NOT NULL );
+"
+
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+USE Test1
+SELECT * FROM table1
+"
+
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+SELECT
+  *
+FROM
+  Test1.INFORMATION_SCHEMA.TABLES;
+GO
+"
+```
+}}
+### Create server trigger {{
+
+use master;
+-- create table LoginActivity
+CREATE TABLE LoginActivity (LOGONEvent XML ,Logintime datetime);
+ 
+-- create trigger track_logins
+CREATE TRIGGER [track_logins] ON ALL SERVER
+FOR LOGON AS 
+BEGIN
+ INSERT INTO LoginActivity
+ SELECT EVENTDATA()
+  ,GETDATE()
+END
+-- Check the server level trigger status
+select * from sys.server_triggers;
+-- Enable all server level triggers
+--The following example enable all DDL triggers that were created at the server scope.
+ENABLE Trigger ALL ON ALL SERVER;  
+-- Disable all server level triggers
+--The following example disables all DDL triggers that were created at the server scope.
+DISABLE Trigger ALL ON ALL SERVER;
+
+}}
+### Create Table trigger {{
+
+USE [secondDb];
+GO
+
+CREATE TABLE [dbo].[triggertable](
+        [customer_id] [int] IDENTITY(1,1) NOT NULL,
+        [fname] [varchar](100) NULL,
+        [lname] [varchar](100) NULL,
+        [description] [varchar](500) NULL,
+PRIMARY KEY CLUSTERED ([customer_id] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]) ON [PRIMARY]
+GO
+
+
+CREATE TRIGGER reminder2
+ON dbo.triggertable
+AFTER INSERT, UPDATE
+AS RAISERROR ('Notify Customer Relations', 16, 10);
+GO
+
+}}
+### Create database trigger {{
+
+USE firstDb;
+GO
+
+CREATE TRIGGER safety
+    ON DATABASE
+    FOR DROP_SYNONYM
+    AS IF (@@ROWCOUNT = 0)
+           RETURN;
+       RAISERROR ('You must disable Trigger "safety" to remove synonyms!', 10, 1);
+       ROLLBACK;
+GO
+
+}}
+## TDE setup {{
+
+```
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+select * from sys.certificates;
+go
+
+
+CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'P@$$w0rd';
+GO
+
+select * from sys.symmetric_keys;
+go
+
+CREATE CERTIFICATE TDE_Certificate WITH SUBJECT = 'TDE_Cert',
+START_DATE = '2023-10-01',
+EXPIRY_DATE = '2029-12-12';
+GO
+
+-- ###### Create database-1
+create database 'spaces2';
+go
+
+USE 'spaces2'
+CREATE TABLE Marvel
+(ID        INT PRIMARY KEY, 
+ Name     VARCHAR(30) NOT NULL, 
+ Seq VARCHAR(10) NOT NULL
+);
+GO
+
+
+Insert into Marvel (ID,Name,Seq)
+            Select 1,'IronMan',11111111 UNION ALL
+            Select 2, 'SpiderMan',22222222 UNION ALL
+            Select 3, 'Hulk',33333333 UNION ALL
+            Select 4,'captainAmerica',44444444 UNION ALL
+            Select 5, 'captainMarvel',55555555;
+go
+
+USE 'spaces2'
+GO
+CREATE DATABASE ENCRYPTION KEY
+WITH ALGORITHM = AES_256
+ENCRYPTION BY SERVER CERTIFICATE TDE_Certificate;
+GO
+
+
+ALTER DATABASE 'spaces2' SET ENCRYPTION ON;
+GO
+
+-- ####Validate 'spaces2' , temp is in output
+select db_name(database_id) as DBName,encryption_state,encryption_state_desc,percent_complete from sys.dm_database_encryption_keys;
+go"
+```
+
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+select db_name(database_id) as DBName,encryption_state,encryption_state_desc,percent_complete from sys.dm_database_encryption_keys;
+go"
+
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+select * from sys.symmetric_keys;
+go"
+
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+SELECT name, state_desc FROM sys.databases;
+go"
+
+
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+USE DB1
+CREATE TABLE Marvel3
+(ID        INT PRIMARY KEY, 
+ Name     VARCHAR(30) NOT NULL, 
+ Seq VARCHAR(10) NOT NULL
+);
+GO
+
+
+Insert into Marvel3 (ID,Name,Seq)
+            Select 1,'IronMan',11111111 UNION ALL
+            Select 2, 'SpiderMan',22222222 UNION ALL
+            Select 3, 'Hulk',33333333 UNION ALL
+            Select 4,'captainAmerica',44444444 UNION ALL
+            Select 5, 'captainMarvel',55555555;
+go"
+
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+USE DB1
+SELECT * FROM Marvel
+GO
+"
+
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+USE DB1
+SELECT * FROM Marvel2;
+GO
+"
+
+
+Invoke-Sqlcmd -ConnectionString "User Id=admin; Password=obfuscatedPassword" -Querytimeout 1000 -Query "
+SELECT
+  *
+FROM
+  DB1.INFORMATION_SCHEMA.TABLES;
+GO
+"
+
+}}
+
+}}
 }}
 # Programming Langs {{
 ## Perl{{
